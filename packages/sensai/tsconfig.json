@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["ES2015"],
+    "paths": {
+      "@/*": ["./*"],
+      "#/*": ["./*"] // use in conjunction with .swcrc to symbolize root of package
+    }
+  }
+}
