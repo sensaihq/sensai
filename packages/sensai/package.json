@@ -1,6 +1,6 @@
 {
   "name": "sensai",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Because even AI needs a master",
   "bin": {
     "sensai": "./dist/src/bin/sensai.js"

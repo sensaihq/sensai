@@ -8,8 +8,10 @@ import { getPackageManager, installDependencies } from "@/src/lib/package";
 import input from "@/src/lib/prompt";
 import pkg from "#/package.json";
 
+const { version } = pkg;
+
 program
-  .version(pkg.version)
+  .version(version)
   .description("Description:\n  Create sensai project")
   .argument("[name]", "represents the project name");
 
@@ -52,7 +54,7 @@ const create = async (name: string) => {
           "start": "sensai start"
         },
         "devDependencies": {
-          "sensai": "latest",
+          "sensai": "${version}",
           "typescript": "5.5.4"
         }
       }`,
