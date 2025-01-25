@@ -1,6 +1,6 @@
 {
   "name": "sensai",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Because even AI needs a master",
   "bin": {
     "sensai": "./dist/src/bin/sensai.js"
@@ -12,13 +12,13 @@
     "build": "swc ./src -d dist/"
   },
   "dependencies": {
-    "commander": "^13.1.0"
+    "commander": "^13.1.0",
+    "next": "^15.1.6"
   },
   "devDependencies": {
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.9",
-    "@sensai/doc": "workspace:*",
-    "next": "^15.1.6"
+    "@sensai/doc": "workspace:*"
   },
   "repository": {
     "type": "git",
