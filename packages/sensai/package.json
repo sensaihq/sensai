@@ -1,9 +1,9 @@
 {
   "name": "sensai",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Because even AI needs a master",
   "bin": {
-    "simpi": "./dist/src/bin/sensai.js"
+    "sensai": "./dist/src/bin/sensai.js"
   },
   "scripts": {
     "build": "swc ./src -d dist/"
