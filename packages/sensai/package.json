@@ -5,6 +5,9 @@
   "bin": {
     "sensai": "./dist/src/bin/sensai.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "swc ./src -d dist/"
   },
