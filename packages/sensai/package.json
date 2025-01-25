@@ -1,9 +1,9 @@
 {
   "name": "sensai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Because even AI needs a master",
   "bin": {
-    "simpi": "./dist/bin/sensai.js"
+    "simpi": "./dist/src/bin/sensai.js"
   },
   "scripts": {
     "build": "swc ./src -d dist/"
@@ -11,7 +11,9 @@
   "devDependencies": {
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.9",
-    "commander": "^13.1.0"
+    "commander": "^13.1.0",
+    "@sensai/doc": "workspace:*",
+    "next": "^15.1.6"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,6 @@
   },
   "homepage": "https://github.com/bredele/sensai#readme",
   "engines": {
-    "node": ">=18"
+    "node": ">=18.18.0"
   }
 }
