@@ -1,2 +1,1 @@
-# sensai
-Because even AI needs a master!
+./packages/sensai/README.md
