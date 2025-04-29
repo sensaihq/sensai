@@ -1,3 +1,4 @@
+import { isRelative } from '@/src/utils/path'
 import chokidar from 'chokidar'
 import { join } from 'path'
 
@@ -45,13 +46,4 @@ export default async (dir: string, router: Router) => {
   //     router.prune(folderPath)
   //   }
   // })
-}
-
-
-/**
- * Returns true if the given absoltute `path` is relative to absolute `root` path.
- */
-
-const isRelative = (root: string, path: string): boolean => {
-  return path.substring(0, root.length) === root
 }

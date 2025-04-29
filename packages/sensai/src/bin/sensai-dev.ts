@@ -16,14 +16,6 @@ const initializeDevServer = async (apiDir: string, options: { port: string, watc
   })
 }
 
-/**
- * Create dev CLI UI.
- */
-
-const terminalUI = async (apiDir: string, options: { port: string, watch: boolean }) => {
-  await initializeDevServer(apiDir, options)
-}
-
 // create dev command
 export default new commander.Command()
   .command(SENSAI_COMMAND.DEV)
@@ -36,6 +28,6 @@ export default new commander.Command()
   )
   .option('--no-watch', 'disable hot reload')
   .usage("<dir> -p <port number>")
-  .action(terminalUI);
+  .action(initializeDevServer);
 
 

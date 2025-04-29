@@ -21,7 +21,11 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
 
-  examples/basic: {}
+  examples/basic:
+    dependencies:
+      sensai:
+        specifier: ^1.0.6
+        version: link:../../packages/sensai
 
   packages/sensai:
     dependencies:
@@ -96,6 +100,12 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+
+  packages/ts-to-json:
+    dependencies:
+      typescript:
+        specifier: ^5.3.0
+        version: 5.5.4
 
 packages:
 
@@ -2233,7 +2243,6 @@ packages:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /uint8array-extras@1.4.0:
     resolution: {integrity: sha512-ZPtzy0hu4cZjv3z5NW9gfKnNLjoz4y6uv4HlelAjDK7sY/xOkKZv9xK/WQpcsBB3jEybChz9DPC2U/+cusjJVQ==}

@@ -1,3 +1,0 @@
----
-instructions: Find flight details.
----

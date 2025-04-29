@@ -15,15 +15,16 @@ import { FILE_TYPE } from '@/src/constants'
 
 export default (
   cwdPath: string,
-  apiPath: string // TODO should support multiple paths
+  apiDir: string // TODO should support multiple paths
 ): void => {
   const aliases = getCompilerOptions(cwdPath)
+  const apiPath = join(cwdPath, apiDir)
   for (const extension of Object.values(JSExtensionE)) {
     // @ts-ignore
-    NativeModule._extensions[extension] = typescriptCompiler(aliases)
+    NativeModule._extensions[extension] = typescriptCompiler(aliases, apiPath)
   }
   // @ts-ignore
-  NativeModule._extensions[MDExtensionE.MARKDOWN] = markdownCompiler(join(cwdPath, apiPath), aliases)
+  NativeModule._extensions[MDExtensionE.MARKDOWN] = markdownCompiler(apiDir, aliases)
 }
 
 /**
@@ -32,7 +33,7 @@ export default (
  * used for JavaScript files to insure consistency.
  */
 
-const typescriptCompiler = (aliases: any) => {
+const typescriptCompiler = (aliases: any, apiPath: string) => {
   return decorator((filename, content) => {
     return getJsCode(content, options(filename, aliases))
   })
@@ -97,3 +98,4 @@ const decorator = (
 const getJsCode = (content: string, options: Options | undefined) => {
   return transformSync(content, options).code
 }
+
