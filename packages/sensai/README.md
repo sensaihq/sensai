@@ -12,9 +12,8 @@
   </a>
 </p>
 
-The framework to simply and quickly build enterprise grade APIs.
-
-As a developer, you often find yourself spending precious time setting up tooling, adding plugins and middlewares, parsing requests, and returning the correct data. The list seems endless, and it's hard to keep up! Sensai abstracts all of that, removing all points of friction so that you can focus on what really matters: effortlessly building your business logic.
+Sensai is an opinionated TypeScript/JavaScript framework that helps you easily build production ready API and AI applications.
+Sensai feels like magic, just write a function, push to Git, and that’s it. In seconds, your backend is live and ready to use.
 
 - **Zero configuration**
 - **File-system based router**
