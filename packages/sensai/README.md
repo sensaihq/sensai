@@ -17,7 +17,6 @@ Sensai is an opinionated TypeScript/JavaScript framework that helps you easily b
 - **Zero configuration**
 - **File-system based router**
 - **Live reload and automatic bundling**
-- **First class TypeScript support**
 - **API battery included**
 - **AI battery included**
 - and [more](https://sensai.sh/docs#features)
