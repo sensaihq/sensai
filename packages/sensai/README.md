@@ -4,9 +4,6 @@
   <a aria-label="NPM version" href="https://www.npmjs.com/package/sensai">
     <img alt="" src="https://img.shields.io/npm/v/sensai.svg?style=for-the-badge&labelColor=3d3d3d">
   </a> 
-  <a aria-label="License" href="https://github.com/sensaihq/sensai/blob/main/packages/sensai/LICENSE.md">
-    <img alt="" src="https://img.shields.io/npm/l/sensai.svg?style=for-the-badge&labelColor=3d3d3d&color=ffae42">
-  </a>
   <a aria-label="Join the community" href="https://github.com/sensaihq/sensai/discussions">
     <img alt="" src="https://img.shields.io/badge/Join%20the%20community-f62681.svg?style=for-the-badge&labelColor=000000&logoWidth=20">
   </a>
@@ -34,13 +31,3 @@ npm create sensai
 ```
 
 Happy coding!
-
-## Contribution
-
-Before contributing to this repository, please ensure you read our [guidelines](/CONTRIBUTING.md). If you have any related projects, questions or anything else to share, feel free to join our [Discord channel](https://discord.com/invite/sensai) or reach out to us directly [by email](mailto:friends@sensai.ai).
-
-We have [many ideas](https://feedback.sensai.sh/roadmap) for making sensai an exceptional framework. Instead of implementing everything at once, we aim to introduce features gradually and validate them with our community, so they can be tailor-made to meet your needs. Our goal is to have the technology feature-ready for production use by v2.
-
-## Sponsors
-
-Thanks to the amazing support and contributions of our community, [sponsors](https://sensai.sh/sponsors) and some of the world's leading companies out there. Your continuous support plays a vital role in fueling our mission: Empower developers by creating the right environment for them to innovate, and removing points of friction.
