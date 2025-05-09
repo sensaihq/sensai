@@ -131,3 +131,4 @@ dist
 
 
 .turbo
+**/.claude/settings.local.json
