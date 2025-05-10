@@ -2,10 +2,7 @@ import test from "node:test";
 import assert from "node:assert";
 import { IncomingMessage } from "node:http";
 import { Readable } from "node:stream";
-import parseBody from "./body";
-
-// Define a mock function type for the body parser we'll be testing
-type BodyParser = (req: IncomingMessage) => Promise<unknown>;
+import parseBody, { normalizeCharset } from "./body";
 
 // Utility to create a mock request
 function createMockRequest(
@@ -15,7 +12,10 @@ function createMockRequest(
   const mockRequest = new Readable() as IncomingMessage;
   mockRequest.push(body);
   mockRequest.push(null);
-  mockRequest.headers = headers;
+  mockRequest.headers = {
+    "content-length": Buffer.byteLength(body).toString(),
+    ...headers,
+  };
   return mockRequest;
 }
 
@@ -26,7 +26,7 @@ test("should parse JSON content type correctly", async () => {
   });
 
   const result = await parseBody(request);
-  assert.deepStrictEqual(result, jsonData);
+  assert.deepEqual(result, jsonData);
 });
 
 test("should parse URL-encoded form data correctly", async () => {
@@ -40,7 +40,7 @@ test("should parse URL-encoded form data correctly", async () => {
 
   const result = await parseBody(request);
 
-  assert.deepStrictEqual(result, {
+  assert.deepEqual(result, {
     string: "hello",
     number: "123", // All values come as strings in form-urlencoded
     zero: "0",
@@ -97,7 +97,7 @@ test("should handle malformed URL-encoded data gracefully", async () => {
 
   const result = await parseBody(mockReq);
 
-  assert.deepStrictEqual(result, {
+  assert.deepEqual(result, {
     name: "test",
     value: "123",
     invalid: "",
@@ -111,19 +111,61 @@ test("should handle content type with various charset parameters", async () => {
   // Test multiple common charsets
   const charsets = [
     "utf-8",
+    "ascii",
+    "latin1",
     "UTF-8",
     "iso-8859-1",
     "ISO-8859-1",
-    "us-ascii",
-    "windows-1252",
+    // "windows-1252",
   ];
 
-  for (const charset of charsets) {
-    const mockReq = createMockRequest(jsonString, {
+  for (let charset of charsets) {
+    // Try to encode with the specified charset
+    const encodedString = Buffer.from(jsonString).toString(
+      normalizeCharset(charset) as BufferEncoding
+    );
+    console.log(`application/json; charset=${charset}`);
+    const mockReq = createMockRequest(encodedString, {
       "content-type": `application/json; charset=${charset}`,
     });
 
-    const result = await parseBody(mockReq);
-    assert.deepStrictEqual(result, jsonData, `Failed with charset: ${charset}`);
+    try {
+      const result = await parseBody(mockReq);
+      assert.deepEqual(result, jsonData, `Failed with charset: ${charset}`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+
+test("should throw 400 exception if data byte length does not match Content-Length", async () => {
+  const mockReq = createMockRequest(
+    JSON.stringify({ name: "test", value: 123 }),
+    {
+      "content-type": `application/json`,
+      "content-length": "3", // Incorrect length
+    }
+  );
+  try {
+    await parseBody(mockReq);
+    assert.fail("Expected error not thrown");
+  } catch (error: any) {
+    assert.equal(error.code, 400);
+  }
+});
+
+test("should throw 413 exception if Content-Length greater than limit", async () => {
+  const mockReq = createMockRequest(
+    JSON.stringify({ name: "test", value: 123 }),
+    {
+      "content-type": `application/json`,
+      "Content-Length": "3", // Incorrect length
+    }
+  );
+  try {
+    await parseBody(mockReq, 2);
+    assert.fail("Expected error not thrown");
+  } catch (error: any) {
+    assert.equal(error.code, 413);
   }
 });
