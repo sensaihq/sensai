@@ -70,7 +70,7 @@ test("should handle missing content-type header by returning raw body as string"
 
   const result = await parseBody(request);
 
-  assert.strictEqual(result, body);
+  assert.deepEqual(result, { raw: body });
 });
 
 test("should reject with error for invalid JSON", async () => {

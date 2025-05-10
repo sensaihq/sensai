@@ -154,7 +154,7 @@ async function getBodyFromRequest(
 async function parseBody(
   request: IncomingMessage,
   limit: number = 1000000 // 1MB
-): Promise<unknown> {
+): Promise<object> {
   const { headers } = request;
   const contentType = headers["content-type"] || "";
 
@@ -193,7 +193,7 @@ async function parseBody(
       return parseUrlEncoded(body);
     default:
       // If content type is not recognized, return raw body
-      return body;
+      return { raw: body };
   }
 }
 

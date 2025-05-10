@@ -10,6 +10,7 @@ import {
 } from "@/src/constants";
 import { type Router } from "@/src/lib/router";
 import context from "@/src/lib/server/context";
+import parseBody from "@/src/lib/server/body";
 
 export default (router: Router) => {
   /**
@@ -18,7 +19,6 @@ export default (router: Router) => {
 
   return async (request: IncomingMessage, response: ServerResponse) => {
     const { method = HTTP_DEFAULT_METHOD, headers, url } = request;
-    console.log("hello world");
     const { middlewares = [], resource, params } = router.lookup(url) || {};
     if (resource) {
       const isHead = method === HTTP_HEAD;
@@ -28,7 +28,8 @@ export default (router: Router) => {
         const route = endpoint[VERSION_DEFAULT]; // TODO check from header X-Api-Version or Accept?
         if (route) {
           const { route: routePath, type } = route;
-          const data = await getRequestData(request);
+          const body = await parseBody(request);
+          const data = { ...body, ...params };
           try {
             const output = await context.run({}, async () => {
               return await [...middlewares, routePath].reduce(
@@ -70,14 +71,6 @@ export default (router: Router) => {
       write(response, HTTP_STATUS.NOT_FOUND);
     }
   };
-};
-
-/**
- * Extract data from the incoming message.
- */
-
-const getRequestData = async (request: IncomingMessage) => {
-  return {};
 };
 
 /**
