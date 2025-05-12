@@ -11,6 +11,8 @@ import {
 import { type Router } from "@/src/lib/router";
 import context from "@/src/lib/server/context";
 import parseBody from "@/src/lib/server/body";
+import { parse as parseQueryParameters } from "@/src/utils/querystring";
+import { parseUrl } from "@/src/utils/url";
 
 export default (router: Router) => {
   /**
@@ -18,7 +20,8 @@ export default (router: Router) => {
    */
 
   return async (request: IncomingMessage, response: ServerResponse) => {
-    const { method = HTTP_DEFAULT_METHOD, headers, url } = request;
+    const { method = HTTP_DEFAULT_METHOD, headers, url: requestUrl } = request;
+    const { url, searchParams } = parseUrl(requestUrl);
     const { middlewares = [], resource, params } = router.lookup(url) || {};
     if (resource) {
       const isHead = method === HTTP_HEAD;
@@ -28,8 +31,7 @@ export default (router: Router) => {
         const route = endpoint[VERSION_DEFAULT]; // TODO check from header X-Api-Version or Accept?
         if (route) {
           const { route: routePath, type } = route;
-          const body = await parseBody(request);
-          const data = { ...body, ...params };
+          const data = await getRequestData(request, searchParams, params);
           try {
             const output = await context.run({}, async () => {
               return await [...middlewares, routePath].reduce(
@@ -70,6 +72,26 @@ export default (router: Router) => {
     } else {
       write(response, HTTP_STATUS.NOT_FOUND);
     }
+  };
+};
+
+/**
+ * Extract data from request.
+ * @notes
+ *   - the query parameters and URL path parameters are passed separately for speed.
+ *   - we could merge query and body strings (ir url encoded) for faster parsing (it will also facilitate picking properties later on)
+ */
+
+const getRequestData = async (
+  request: IncomingMessage,
+  searchParams: string,
+  params: Record<string, string | string[]> // TODO merge trie ParamsT with other type
+) => {
+  const body = await parseBody(request);
+  return {
+    ...parseQueryParameters(searchParams),
+    ...body,
+    ...params,
   };
 };
 

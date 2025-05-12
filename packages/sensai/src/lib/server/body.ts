@@ -1,5 +1,5 @@
 import { IncomingMessage } from "node:http";
-import querystring from "node:querystring";
+import { parse as parseUrlEncoded } from "@/src/utils/querystring";
 import ServerError from "@/src/lib/server/error";
 
 /**
@@ -39,19 +39,6 @@ function normalizeCharset(charset: string): string {
     default:
       return charset;
   }
-}
-
-/**
- * Parse URL-encoded form data
- * @param body The raw body string
- * @returns Parsed query parameters
- */
-
-function parseUrlEncoded(body: string): querystring.ParsedUrlQuery {
-  if (!body) {
-    return {};
-  }
-  return querystring.parse(body);
 }
 
 /**
