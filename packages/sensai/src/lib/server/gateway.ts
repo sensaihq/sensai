@@ -16,6 +16,7 @@ import { parseUrl } from "@/src/utils/url";
 import { SlugParams } from "@/src/types";
 import { getUniqueRequestId } from "@/src/utils/request";
 import { Stream } from "node:stream";
+import ServerError from "./error";
 
 export default (router: Router) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
@@ -48,10 +49,16 @@ export default (router: Router) => {
               }
             );
             write(response, status.code, serverHeaders, output, isHead);
-          } catch (error) {
-            // TODO do something with error
-            console.error(error);
-            write(response, HTTP_STATUS.INTERNAL_ERROR);
+          } catch (error: unknown) {
+            // TODO log errors in dev mode
+            if (error instanceof ServerError) {
+              // TODO provide a way to obfuscate and manage errors
+              const { code, message } = error;
+              const payload = message ? { code, message } : undefined;
+              write(response, error.code, serverHeaders, payload);
+            } else {
+              write(response, HTTP_STATUS.INTERNAL_ERROR, serverHeaders);
+            }
           }
         } else {
           // status code when using content negotiation with the Accept header.
