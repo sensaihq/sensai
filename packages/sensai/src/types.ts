@@ -10,4 +10,8 @@ export type SlugParams = Record<string, string | string[]>;
 export type Context = {
   type: string;
   headers: Record<string, string>;
+  status: {
+    code: number;
+    errorMessage?: string;
+  };
 };

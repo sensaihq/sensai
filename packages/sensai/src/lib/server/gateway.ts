@@ -22,6 +22,8 @@ export default (router: Router) => {
     const { method = HTTP_DEFAULT_METHOD, headers, url: requestUrl } = request;
     const { url, searchParams } = parseUrl(requestUrl);
     const { middlewares = [], resource, params } = router.lookup(url) || {};
+    const requestId = getUniqueRequestId();
+    const serverHeaders = { "X-Request-Id": requestId };
     if (resource) {
       const isHead = method === HTTP_HEAD;
       const endpoint =
@@ -32,29 +34,20 @@ export default (router: Router) => {
           const { route: routePath, type } = route;
           const data = await getRequestData(request, searchParams, params);
           try {
-            const requestId = getUniqueRequestId();
+            const status = { code: HTTP_STATUS.OK };
             const output = await context.run(
-              { headers, type, requestId },
+              { headers, type, requestId, status },
               async () => {
                 return await [...middlewares, routePath].reduce(
                   (prev, next) => {
                     const { default: handler } = require(next);
                     return prev.then(handler.bind({ request, response }));
                   },
-                  Promise.resolve({
-                    ...data,
-                    ...params,
-                  })
+                  Promise.resolve({ ...data, ...params })
                 );
               }
             );
-            write(
-              response,
-              HTTP_STATUS.OK,
-              { "X-Request-Id": requestId },
-              output,
-              isHead
-            );
+            write(response, status.code, serverHeaders, output, isHead);
           } catch (error) {
             // TODO do something with error
             console.error(error);
@@ -62,15 +55,16 @@ export default (router: Router) => {
           }
         } else {
           // status code when using content negotiation with the Accept header.
-          write(response, HTTP_STATUS.NOT_ACCEPTABLE);
+          write(response, HTTP_STATUS.NOT_ACCEPTABLE, serverHeaders);
         }
       } else {
         write(response, HTTP_STATUS.NOT_ALLOWED, {
+          ...serverHeaders,
           Allow: Object.keys(resource),
         });
       }
     } else {
-      write(response, HTTP_STATUS.NOT_FOUND);
+      write(response, HTTP_STATUS.NOT_FOUND, serverHeaders);
     }
   };
 };

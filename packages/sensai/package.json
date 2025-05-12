@@ -1,6 +1,6 @@
 {
   "name": "sensai",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Because even AI needs a master",
   "bin": {
     "sensai": "./dist/src/bin/sensai.js"
@@ -10,7 +10,9 @@
     "template.js",
     "template.d.ts",
     "headers.js",
-    "headers.d.ts"
+    "headers.d.ts",
+    "status.js",
+    "status.d.ts"
   ],
   "scripts": {
     "build": "swc ./src -d dist/",
