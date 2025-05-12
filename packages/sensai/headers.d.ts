@@ -1,3 +1,3 @@
-import template from "./src/hooks/headers";
-export * from "./src/hooks/headers";
+import template from "./src/lib/hooks/headers";
+export * from "./src/lib/hooks/headers";
 export default template;
