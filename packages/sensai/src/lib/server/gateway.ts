@@ -15,6 +15,7 @@ import { parse as parseQueryParameters } from "@/src/utils/querystring";
 import { parseUrl } from "@/src/utils/url";
 import { SlugParams } from "@/src/types";
 import { getUniqueRequestId } from "@/src/utils/request";
+import { Stream } from "node:stream";
 
 export default (router: Router) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
@@ -47,16 +48,12 @@ export default (router: Router) => {
                 );
               }
             );
-            const payload = output == null ? "" : JSON.stringify(output);
             write(
               response,
               HTTP_STATUS.OK,
-              {
-                "Content-Type": MIME_TYPE.JSON, // default charset for json is utf-8
-                "Content-Length": Buffer.byteLength(payload),
-                "X-Request-Id": requestId,
-              },
-              isHead ? null : payload
+              { "X-Request-Id": requestId },
+              output,
+              isHead
             );
           } catch (error) {
             // TODO do something with error
@@ -106,10 +103,23 @@ const write = (
   response: ServerResponse,
   code: number,
   headers: any = {},
-  payload?: string
+  payload?: any,
+  shouldNotReturnPayload?: boolean
 ) => {
-  // TODO detech if payload is stream and pipe
   // TODO The content type of the response should match what the client expects based on the context of the API and the Accept header.
-  response.writeHead(code, headers);
-  response.end(payload);
+  if (payload instanceof Stream) {
+    response.writeHead(code, {
+      ...headers,
+      "Transfer-Encoding": "chunked",
+    });
+    payload.pipe(response);
+  } else {
+    const output = payload == null ? "" : JSON.stringify(payload);
+    response.writeHead(code, {
+      ...headers,
+      "Content-Type": MIME_TYPE.JSON, // default charset for json is utf-8
+      "Content-Length": Buffer.byteLength(output),
+    });
+    response.end(shouldNotReturnPayload ? null : output);
+  }
 };
