@@ -14,15 +14,11 @@ import parseBody from "@/src/lib/server/body";
 import { parse as parseQueryParameters } from "@/src/utils/querystring";
 import { parseUrl } from "@/src/utils/url";
 import { SlugParams } from "@/src/types";
+import { getUniqueRequestId } from "@/src/utils/request";
 
 export default (router: Router) => {
-  /**
-   * HTTP REST flow.
-   */
-
   return async (request: IncomingMessage, response: ServerResponse) => {
     const { method = HTTP_DEFAULT_METHOD, headers, url: requestUrl } = request;
-    console.log(headers);
     const { url, searchParams } = parseUrl(requestUrl);
     const { middlewares = [], resource, params } = router.lookup(url) || {};
     if (resource) {
@@ -35,18 +31,22 @@ export default (router: Router) => {
           const { route: routePath, type } = route;
           const data = await getRequestData(request, searchParams, params);
           try {
-            const output = await context.run({ headers, type }, async () => {
-              return await [...middlewares, routePath].reduce(
-                (prev, next) => {
-                  const { default: handler } = require(next);
-                  return prev.then(handler.bind({ request, response }));
-                },
-                Promise.resolve({
-                  ...data,
-                  ...params,
-                })
-              );
-            });
+            const requestId = getUniqueRequestId();
+            const output = await context.run(
+              { headers, type, requestId },
+              async () => {
+                return await [...middlewares, routePath].reduce(
+                  (prev, next) => {
+                    const { default: handler } = require(next);
+                    return prev.then(handler.bind({ request, response }));
+                  },
+                  Promise.resolve({
+                    ...data,
+                    ...params,
+                  })
+                );
+              }
+            );
             const payload = output == null ? "" : JSON.stringify(output);
             write(
               response,
@@ -54,6 +54,7 @@ export default (router: Router) => {
               {
                 "Content-Type": MIME_TYPE.JSON, // default charset for json is utf-8
                 "Content-Length": Buffer.byteLength(payload),
+                "X-Request-Id": requestId,
               },
               isHead ? null : payload
             );
