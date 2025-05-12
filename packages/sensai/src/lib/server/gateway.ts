@@ -13,6 +13,7 @@ import context from "@/src/lib/server/context";
 import parseBody from "@/src/lib/server/body";
 import { parse as parseQueryParameters } from "@/src/utils/querystring";
 import { parseUrl } from "@/src/utils/url";
+import { SlugParams } from "@/src/types";
 
 export default (router: Router) => {
   /**
@@ -86,7 +87,7 @@ export default (router: Router) => {
 const getRequestData = async (
   request: IncomingMessage,
   searchParams: string,
-  params: Record<string, string | string[]> // TODO merge trie ParamsT with other type
+  params: SlugParams
 ) => {
   const body = await parseBody(request);
   return {

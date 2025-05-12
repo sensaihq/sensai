@@ -3,3 +3,11 @@ export type SensaiConfig = {
   port: number;
   watch: boolean;
 };
+
+export type SlugParams = Record<string, string | string[]>;
+
+// asynchronous context
+export type Context = {
+  type: string;
+  headers: Record<string, string>;
+};
