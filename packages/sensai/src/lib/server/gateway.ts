@@ -21,6 +21,7 @@ export default (router: Router) => {
 
   return async (request: IncomingMessage, response: ServerResponse) => {
     const { method = HTTP_DEFAULT_METHOD, headers, url: requestUrl } = request;
+    console.log(headers);
     const { url, searchParams } = parseUrl(requestUrl);
     const { middlewares = [], resource, params } = router.lookup(url) || {};
     if (resource) {
@@ -33,7 +34,7 @@ export default (router: Router) => {
           const { route: routePath, type } = route;
           const data = await getRequestData(request, searchParams, params);
           try {
-            const output = await context.run({}, async () => {
+            const output = await context.run({ headers, type }, async () => {
               return await [...middlewares, routePath].reduce(
                 (prev, next) => {
                   const { default: handler } = require(next);
