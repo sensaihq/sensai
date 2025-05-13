@@ -1,6 +1,4 @@
 import httpServer from "@/src/lib/server/http";
-import initializeDoc from "@/src/lib/server/dev/doc";
-import { DEV_DOC_PATH } from "@/src/constants";
 import { type SensaiConfig } from "@/src/types";
 import router from "@/src/lib/router";
 import gateway from "@/src/lib/server/gateway";
@@ -28,8 +26,7 @@ export default async (options: SensaiConfig) => {
       // TODO test for performance
       return api(request, response);
     } else {
-      // TODO this messes with our invalidate caching mechanism
-      //return doc(request, response);
+      // TODO documentation
     }
   }, options.port);
   return server;

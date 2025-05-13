@@ -21,11 +21,7 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
 
-  examples/basic:
-    dependencies:
-      sensai:
-        specifier: ^1.0.6
-        version: link:../../packages/sensai
+  examples/basic: {}
 
   packages/sensai:
     dependencies:
