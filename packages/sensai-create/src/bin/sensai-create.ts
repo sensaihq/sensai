@@ -108,7 +108,7 @@ const promptName = async (name?: string) => {
       `  ${orange("cd")} ${name}`,
       `  ${orange(`${packageManager} run dev`)}\n`,
       "Happy coding!\n",
-      `To learn more, please visit ${gray("https://sensai.tech/")}`,
+      `To learn more, please visit ${gray("https://sensai.sh/docs")}`,
     ]);
   } catch (error) {
     if (error.name === "ExitPromptError") {
