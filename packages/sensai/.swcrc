@@ -12,7 +12,7 @@
   "jsc": {
     "target": "es2022",
     "loose": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "parser": {
       "syntax": "typescript",
       "dynamicImport": true,
