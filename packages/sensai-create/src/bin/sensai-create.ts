@@ -17,11 +17,13 @@ program
 
 program.parse();
 
+//TODO add "@types/node": "^22.10.10", with version dependending on node version used
 const create = async (name: string) => {
   const root = join(process.cwd(), name);
   if (existsSync(root)) {
     throw `Error: The directory "${root}" already exists.`;
   }
+  const nodeMajor = process.version.slice(1).split(".")[0];
   // scaffold basic example
   scaffold(root, {
     "api/(protected)/hello/route.ts": `export default async ({ name }) => {
@@ -53,9 +55,15 @@ const create = async (name: string) => {
           "build": "sensai build",
           "start": "sensai start"
         },
+        "dependencies": {
+          "sensai": "${version}"
+        },
         "devDependencies": {
-          "sensai": "${version}",
+          "@types/node": "^${nodeMajor}",
           "typescript": "5.5.4"
+        },
+        "engines": {
+          "node": ">=20.0.0"
         }
       }`,
     "tsconfig.json": `{
