@@ -1,3 +1,4 @@
+import { sep, posix } from "path";
 import httpServer from "@/src/lib/server/http";
 import { type SensaiConfig } from "@/src/types";
 import router from "@/src/lib/router";
@@ -14,7 +15,8 @@ export default async (options: SensaiConfig) => {
   const routes = await router(cwdPath);
   const entries = await walker(options.apiDir);
   for await (const filePath of entries) {
-    routes.add(filePath);
+    const normalizedPath = '/' + posix.join(...filePath.split(sep));
+    routes.add(normalizedPath);
   }
   if (options.watch) await watcher(options.apiDir, routes);
   compiler(cwdPath, options.apiDir);
@@ -29,5 +31,6 @@ export default async (options: SensaiConfig) => {
       // TODO documentation
     }
   }, options.port);
+  console.log(`Sensai Server Started on Port: ${options.port}`);
   return server;
 };
