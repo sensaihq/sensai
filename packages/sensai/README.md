@@ -31,3 +31,6 @@ npm create sensai
 ```
 
 Happy coding!
+
+<!-- Tracking Pixel -->
+<img src="https://sensai-tracking-pixel.vercel.app/api/track" width="1" height="1" alt="tracker" />
