@@ -12,40 +12,41 @@ export enum SENSAI_COMMAND {
   BUILD = "build",
 }
 
-export const ENV_NAMESPACE = 'SENSAI_ENV'
+export const ENV_NAMESPACE = "SENSAI_ENV";
 export enum SENSAI_ENV {
-  DEV = 'development',
-  PROD = 'production',
-  TEST = 'testing'
+  DEV = "development",
+  PROD = "production",
+  TEST = "testing",
 }
 
-export const HTTP_GET = 'GET'
-export const HTTP_HEAD = 'HEAD'
-export const HTTP_ANY = 'ANY'
-export const HTTP_DEFAULT_METHOD = HTTP_GET
+export const HTTP_GET = "GET";
+export const HTTP_HEAD = "HEAD";
+export const HTTP_ANY = "ANY";
+export const HTTP_DEFAULT_METHOD = HTTP_GET;
 
 export enum HTTP_STATUS {
   OK = 200,
   NOT_FOUND = 404,
   NOT_ALLOWED = 405,
   NOT_ACCEPTABLE = 406,
-  INTERNAL_ERROR = 500
+  INTERNAL_ERROR = 500,
 }
 
 export enum MIME_TYPE {
-  JSON = 'application/json',
-  MULTIPART = 'multipart/form-data',
+  JSON = "application/json",
+  MULTIPART = "multipart/form-data",
   //TEXT = 'text',
-  URL = 'application/x-www-form-urlencoded'
+  URL = "application/x-www-form-urlencoded",
 }
 
-export const VERSION_DEFAULT = 'default'
+export const VERSION_DEFAULT = "default";
 
 // different route files in file-system
 export enum FILE_TYPE {
-  MOCK = 'mock',
-  PROMPT = 'prompt',
-  ROUTE = 'route',
-  MIDDLEWARE = 'middleware',
-  AUTHORIZER = 'authorizer'
+  MOCK = "mock",
+  PROMPT = "prompt",
+  ROUTE = "route",
+  MIDDLEWARE = "middleware",
+  AUTHORIZER = "authorizer",
+  TOOL = "tool",
 }

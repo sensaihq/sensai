@@ -14,6 +14,7 @@
     "loose": true,
     "baseUrl": "./",
     "parser": {
+      "topLevelAwait": true,
       "syntax": "typescript",
       "dynamicImport": true,
       "importAssertions": true

@@ -15,12 +15,12 @@ export default async (options: SensaiConfig) => {
   const routes = await router(cwdPath);
   const entries = await walker(options.apiDir);
   for await (const filePath of entries) {
-    const normalizedPath = '/' + posix.join(...filePath.split(sep));
+    const normalizedPath = "/" + posix.join(...filePath.split(sep));
     routes.add(normalizedPath);
   }
-  if (options.watch) await watcher(options.apiDir, routes);
-  compiler(cwdPath, options.apiDir);
-  const api = gateway(routes);
+  if (options.watch) await watcher(routes, options);
+  compiler(routes, { cwdPath, ...options }); // TODO we should pass cwdPath to options in upper level
+  const api = await gateway(routes);
   // create http server
   const server = await httpServer((request, response) => {
     const { url } = request;
