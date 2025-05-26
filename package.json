@@ -2,15 +2,11 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "prerelease": "npm run build",
-    "release": "changeset publish",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.5.1",
-    "@changesets/cli": "^2.29.4",
     "@types/node": "^22.10.10",
     "lerna": "^8.2.2",
     "prettier": "^3.2.5",
