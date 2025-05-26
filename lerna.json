@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "version": "0.0.0",
+  "npmClient": "pnpm",
+  "useWorkspaces": true,
+  "packages": ["packages/*"],
+  "command": {
+    "version": {
+      "conventionalCommits": true
+    },
+    "publish": {
+      "npmClient": "npm",
+      "allowBranch": ["main"],
+      "registry": "https://registry.npmjs.org/"
+    }
+  }
+}
