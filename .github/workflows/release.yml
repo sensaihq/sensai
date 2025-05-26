@@ -11,6 +11,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+    steps:
       - uses: actions/checkout@v4
 
       - name: Setup pnpm
@@ -26,15 +27,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          publish: pnpm run release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Send a Discord notification if a publish happens
-        if: steps.changesets.outputs.published == 'true'
-        run: echo "A new version has been published!"
+      - name: Lerna Version & Publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npx lerna version --conventional-commits --yes
+          npx lerna publish from-git --yes
