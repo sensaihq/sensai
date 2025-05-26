@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.10",
+    "conventional-changelog-conventionalcommits": "^9.0.0",
     "lerna": "^8.2.2",
     "prettier": "^3.2.5",
     "turbo": "^2.3.3",
@@ -16,6 +17,5 @@
   "packageManager": "pnpm@8.6.6",
   "engines": {
     "node": ">=20.0.0"
-  },
-  "dependencies": {}
+  }
 }
