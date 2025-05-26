@@ -132,3 +132,5 @@ dist
 
 .turbo
 **/.claude/settings.local.json
+
+CHANGELOG.md
