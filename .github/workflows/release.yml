@@ -48,5 +48,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npx lerna version --conventional-commits --yes --create-release github"
+          npx lerna version --conventional-commits --yes --create-release github
           npx lerna publish from-git --yes
