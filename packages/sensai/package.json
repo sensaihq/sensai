@@ -1,5 +1,8 @@
 {
   "name": "sensai",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.3.4",
   "description": "Because even AI needs a master",
   "bin": {
@@ -36,7 +39,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bredele/sensai.git"
+    "url": "git+https://github.com/sensaihq/sensai.git"
   },
   "keywords": [
     "ai",
@@ -50,9 +53,9 @@
   ],
   "author": "Olivier Wietrich",
   "bugs": {
-    "url": "https://github.com/bredele/sensai/issues"
+    "url": "https://github.com/sensaihq/sensai/issues"
   },
-  "homepage": "https://github.com/bredele/sensai#readme",
+  "homepage": "https://github.com/sensaihq/sensai#readme",
   "engines": {
     "node": ">=18.18.0"
   }
