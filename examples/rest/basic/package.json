@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "sensai dev"
+  },
+  "dependencies": {
+    "sensai": "^1.3.4"
+  }
+}
