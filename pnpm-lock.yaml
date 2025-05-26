@@ -11,6 +11,9 @@ importers:
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
+      conventional-changelog-conventionalcommits:
+        specifier: ^9.0.0
+        version: 9.0.0
       lerna:
         specifier: ^8.2.2
         version: 8.2.2
@@ -2033,6 +2036,13 @@ packages:
   /conventional-changelog-angular@7.0.0:
     resolution: {integrity: sha512-ROjNchA9LgfNMTTFSIWPzebCwOGFdgkEq45EnvvrmSLvCtAw0HSmrCs7/ty+wAeYUZyNay0YMUNYFTRL72PkBQ==}
     engines: {node: '>=16'}
+    dependencies:
+      compare-func: 2.0.0
+    dev: true
+
+  /conventional-changelog-conventionalcommits@9.0.0:
+    resolution: {integrity: sha512-5e48V0+DsWvQBEnnbBFhYQwYDzFPXVrakGPP1uSxekDkr5d7YWrmaWsgJpKFR0SkXmxK6qQr9O42uuLb9wpKxA==}
+    engines: {node: '>=18'}
     dependencies:
       compare-func: 2.0.0
     dev: true
