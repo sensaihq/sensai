@@ -1,7 +1,9 @@
 name: Release
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
 
@@ -10,7 +12,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,5 +48,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npx lerna version --conventional-commits --no-changelog --yes
+          npx lerna version --conventional-commits --no-changelog --yes --message "chore(release): publish"
           npx lerna publish from-git --yes
