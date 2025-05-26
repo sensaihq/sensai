@@ -6,7 +6,13 @@
   "command": {
     "version": {
       "conventionalCommits": true,
-      "changelogPreset": "./changelog.config.js"
+      "changelogPreset": {
+        "name": "conventionalcommits",
+        "types": [
+          { "type": "feat", "section": "Features" },
+          { "type": "fix", "section": "Bug Fixes" }
+        ]
+      }
     },
     "publish": {
       "npmClient": "npm",
