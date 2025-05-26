@@ -1,0 +1,43 @@
+name: Conventional Merge Commit
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+  merge_group:
+
+jobs:
+  lint-commit-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR Title
+        id: pr
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR_TITLE<<EOF" >> $GITHUB_ENV
+          echo "${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Get Merge Group PR Title
+        id: mg
+        if: github.event_name == 'merge_group'
+        run: |
+          # The merge_group event does not provide PR info directly.
+          # Use GitHub API to fetch the PR title from the associated pull requests.
+          PRS=$(jq -r '.merge_group.pull_requests[].number' <<< "${{ toJson(github.event) }}")
+          for PR in $PRS; do
+            TITLE=$(gh pr view $PR --json title -q .title)
+            echo "PR_TITLE=$TITLE" >> $GITHUB_ENV
+            break # Only check the first PR in the group
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Conventional Commit Format
+        run: |
+          REGEX="^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)(\([^\)]+\))?: .+"
+          if ! [[ "${PR_TITLE}" =~ $REGEX ]]; then
+            echo "❌ PR title does not follow Conventional Commits: '${PR_TITLE}'"
+            exit 1
+          else
+            echo "✅ PR title follows Conventional Commits: '${PR_TITLE}'"
+          fi
