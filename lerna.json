@@ -5,8 +5,7 @@
   "packages": ["packages/*"],
   "command": {
     "version": {
-      "conventionalCommits": true,
-      "changelogPreset": "./changelog.preset.js"
+      "conventionalCommits": true
     },
     "publish": {
       "npmClient": "npm",
