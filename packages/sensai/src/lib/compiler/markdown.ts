@@ -14,14 +14,31 @@ export const getPromptTypescript = (
   // TODO we should provide a way for a prompt to inject the result of an
   // orhter prompt declaratively
   return `
-    import template from 'sensai/template'
-    import ai from 'sensai/ai'
-    ${tools.map((tool) => `import ${tool.name} from '${tool.path}'`).join("\n")}
-    const tools = {${tools.map((tool) => `${tool.name}: { parameters: {}, execute: ${tool.name}}`).join(",")}}
+    import template from 'sensai/template';
+    import ai, { schema } from 'sensai/dist/src/utils/ai'; // TODO this should be cleaner
+    import { getHiddenProperty } from 'sensai/dist/src/utils/hidden';
+
+    const tools = {};
+    ${tools
+      .map(
+        (tool) => `
+      const tool_${tool.name} = require('${tool.path}'); 
+      tools["${tool.name}"] = { description: getHiddenProperty(tool_${tool.name}).summary, parameters: schema(${JSON.stringify(
+        {
+          type: "object",
+          properties: {
+            city: { type: "string", description: "City name" },
+          },
+          required: ["city"],
+        }
+      )}), execute: tool_${tool.name}.default };
+    `
+      )
+      .join("\n")}
     const prompt = template(${JSON.stringify(content)})
     export default async (data) => {
-      const text = await prompt(data)
-      return await ai(text, { tools })
+      const text = await prompt(data);
+      return await ai(text, { tools });
     }
   `;
 };

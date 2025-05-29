@@ -1,7 +1,14 @@
 import NativeModule from "node:module";
-import { basename, parse, join, dirname } from "node:path";
+import { basename, parse, join, dirname, sep } from "node:path";
 import { readFileSync } from "node:fs";
-import { Options, transformSync } from "@swc/core";
+import {
+  Options,
+  transformSync,
+  parseSync,
+  Module,
+  ModuleItem,
+  Program,
+} from "@swc/core";
 import options, { getCompilerOptions } from "@/src/lib/compiler/options";
 import {
   getMarkdownTypescript,
@@ -47,6 +54,7 @@ export default (
 
 const typescriptCompiler = (aliases: any, apiPath: string) => {
   return decorator((filename, content) => {
+    // TODO ONLY IF RELATIVE TO ROOT DIRECTORY
     return getJsCode(content, options(filename, aliases));
   });
 };
@@ -116,5 +124,45 @@ const decorator = (cb: (filePath: string, content: string) => string) => {
  */
 
 const getJsCode = (content: string, options: Options | undefined) => {
-  return transformSync(content, options).code;
+  // exclude third party node modules (TODO should exclude outside of project root)
+  if (options.filename.includes(`${sep}node_modules${sep}`)) return content;
+  const ast = parseSync(content, {
+    ...options.jsc.parser,
+    target: options.jsc.target,
+  });
+  // TODO check we are transpiling ONLY the right files
+  const summary = getExpressionStatement(ast);
+  const file = transformSync(ast, options).code;
+  if (summary) return wrapSensaiModule(file, { summary });
+  return file;
+};
+
+/**
+ * This is used to define sensai meta properties on the given module.
+ */
+
+const wrapSensaiModule = (
+  code: string,
+  meta: Record<string, string>
+): string => {
+  return `
+      const hiddenModule = require('sensai/dist/src/utils/hidden');
+      (function (exports) {${code}})(exports);
+      hiddenModule?.setHiddenProperty?.(exports, ${JSON.stringify(meta)});
+      `;
+};
+
+/**
+ * Sensai module can declare string litteral expression statements that can be used
+ * for documentation or schema description.
+ */
+
+const getExpressionStatement = (ast: Module): string | void => {
+  const first = ast?.body[0];
+  if (
+    first.type === "ExpressionStatement" &&
+    first.expression.type === "StringLiteral"
+  ) {
+    return first.expression.value;
+  }
 };

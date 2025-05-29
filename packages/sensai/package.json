@@ -15,9 +15,7 @@
     "headers.js",
     "headers.d.ts",
     "status.js",
-    "status.d.ts",
-    "ai.js",
-    "ai.d.ts"
+    "status.d.ts"
   ],
   "scripts": {
     "build": "swc ./src -d dist/",
