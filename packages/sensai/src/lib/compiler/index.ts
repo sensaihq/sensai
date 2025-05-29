@@ -89,7 +89,7 @@ const decorator = (cb: (filePath: string, content: string) => string) => {
       mod._compile(cb(filename, content), filename);
     } catch (error: any) {
       // prevent exit 1
-      throw new Error(error.message);
+      throw error;
     }
   };
 };
