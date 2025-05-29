@@ -1,24 +1,21 @@
+import { validateAndCoerce, type JSONSchema7 } from "@/src/lib/schema";
+
+// symbol use to add properties to handler
 const symbol = Symbol("guard");
-
-type GuardOptions = {
-  description?: string;
-  input?: unknown;
-  output?: unknown;
-};
-
-type Input<K extends keyof any, T> = { [P in K]: T };
-type Handler = (data: Input<string, unknown>) => unknown;
 
 /**
  * A guard is a function that wraps a handler and adds input/output
  * validation and other features.
  */
 
-export default async function <T extends Handler>(
+export default function <T extends Handler>(
   handler: T,
   options?: GuardOptions
-): Promise<(...args: Parameters<T>) => Promise<ReturnType<T>>> {
-  return hideProperties(async function (this: any, data, ...args) {
+): (...args: Parameters<T>) => Promise<ReturnType<T>> {
+  return hideProperties(async function (this: any, props, ...args) {
+    const data = options?.input
+      ? await validateAndCoerce(props, options.input)
+      : props;
     return await handler.call(this, data, ...args);
   }, options || {}) as (...args: Parameters<T>) => Promise<ReturnType<T>>;
 }
@@ -49,3 +46,11 @@ const hideProperties = (fn: Handler, value: GuardOptions) => {
     configurable: false,
   });
 };
+
+type GuardOptions = {
+  description?: string;
+  input?: JSONSchema7;
+  output?: JSONSchema7;
+};
+type Input<K extends keyof any, T> = { [P in K]: T };
+type Handler = (data: Input<string, unknown>) => unknown;

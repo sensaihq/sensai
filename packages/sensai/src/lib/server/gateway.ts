@@ -50,7 +50,8 @@ export default (router: Router) => {
             );
             write(response, status.code, serverHeaders, output, isHead);
           } catch (error: unknown) {
-            // TODO log errors in dev mode
+            // TODO log errors properly in dev mode
+            console.error(error);
             if (error instanceof ServerError) {
               // TODO provide a way to obfuscate and manage errors
               const { code, message } = error;
