@@ -4,6 +4,9 @@
     "dev": "sensai dev"
   },
   "dependencies": {
-    "sensai": "*"
+    "sensai": "^1.3.13"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
   }
 }

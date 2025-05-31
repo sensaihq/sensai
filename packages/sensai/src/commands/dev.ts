@@ -1,26 +1,22 @@
-import { sep, posix } from "path";
 import httpServer from "@/src/lib/server/http";
-import { type SensaiConfig } from "@/src/types";
-import router from "@/src/lib/router";
+import createRouter from "@/src/lib/router";
 import gateway from "@/src/lib/server/gateway";
 import walker from "@/src/utils/walker";
 import watcher from "@/src/lib/router/watcher";
 import compiler from "@/src/lib/compiler";
+import { type SensaiConfig } from "@/src/types"; // TODO we should have a standard on how to declare and name types
+import { JSExtensionE } from "@/src/lib/compiler/enums";
+//import typescript from "@/src/commands/typescript";
 
 const apiRouteRegex = /^\/api($|\/|\?)/;
 
 export default async (options: SensaiConfig) => {
-  //const doc = await initializeDoc(DEV_DOC_PATH);
   const cwdPath = process.cwd();
-  const routes = await router(cwdPath);
-  const entries = await walker(options.apiDir);
-  for await (const filePath of entries) {
-    const normalizedPath = '/' + posix.join(...filePath.split(sep));
-    routes.add(normalizedPath);
-  }
-  if (options.watch) await watcher(options.apiDir, routes);
-  compiler(cwdPath, options.apiDir);
-  const api = gateway(routes);
+  const { apiDir, watch, port } = options;
+  const router = await createDevRouter(cwdPath, apiDir);
+  if (watch) await watcher(apiDir, router);
+  compiler(cwdPath, apiDir);
+  const api = gateway(router);
   // create http server
   const server = await httpServer((request, response) => {
     const { url } = request;
@@ -30,7 +26,36 @@ export default async (options: SensaiConfig) => {
     } else {
       // TODO documentation
     }
-  }, options.port);
-  console.log(`Sensai Server Started on Port: ${options.port}`);
+  }, port);
+  console.log(`Sensai Server Started on Port: ${port}`);
   return server;
+};
+
+/**
+ * Create router with all files in the `apiDir` directory and initilize
+ * Typescript if needed (i.e if `apiDir` contains at least one `.ts` or `.tsx` files).
+ */
+
+const createDevRouter = async (cwdPath: string, apiDir: string) => {
+  let hasTypescript = false;
+  const router = await createRouter(cwdPath);
+  const devRouter = {
+    ...router,
+    // detect typesript whenever a file is added to the `apiDir` directory
+    add(filePath: string) {
+      const isTypescript =
+        filePath.endsWith(JSExtensionE.TYPESCRIPT) ||
+        filePath.endsWith(JSExtensionE.TSX);
+      if (!hasTypescript && isTypescript) {
+        hasTypescript = true;
+        //typescript();
+      }
+      router.add(filePath);
+    },
+  };
+  const entries = await walker(apiDir);
+  for await (const filePath of entries) {
+    devRouter.add(filePath);
+  }
+  return devRouter;
 };
