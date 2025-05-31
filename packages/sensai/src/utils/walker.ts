@@ -17,7 +17,7 @@ const walk = async function* (dir: string): AsyncGenerator<string> {
     if (entry.isDirectory()) {
       yield* walk(path);
     } else {
-      yield join("/", posix.join(...path.split(sep)));
+      yield posix.join("/", ...path.split(sep));
     }
   }
 };
