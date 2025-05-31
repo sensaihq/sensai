@@ -32,7 +32,7 @@ export default async (options: SensaiConfig) => {
 };
 
 /**
- * Create router with all files in the `apiDir` directory and initilize
+ * Create router with all files in the `apiDir` directory and initialize
  * Typescript if needed (i.e if `apiDir` contains at least one `.ts` or `.tsx` files).
  */
 
