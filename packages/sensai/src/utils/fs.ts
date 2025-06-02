@@ -1,4 +1,4 @@
-import { readdir, writeFile } from "node:fs/promises";
+import { access, readdir, writeFile, constants } from "node:fs/promises";
 import { join } from "node:path";
 
 /**
@@ -38,5 +38,14 @@ export const write = async (path: string, content: string) => {
     );
   } else {
     return await writeFile(path, content.trim());
+  }
+};
+
+export const hasFile = async (filePath: string): Promise<boolean> => {
+  try {
+    await access(filePath, constants.F_OK);
+    return true;
+  } catch (error) {
+    return false;
   }
 };

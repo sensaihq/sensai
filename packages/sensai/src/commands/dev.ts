@@ -6,7 +6,7 @@ import watcher from "@/src/lib/router/watcher";
 import compiler from "@/src/lib/compiler";
 import { type SensaiConfig } from "@/src/types"; // TODO we should have a standard on how to declare and name types
 import { JSExtensionE } from "@/src/lib/compiler/enums";
-//import typescript from "@/src/commands/typescript";
+import typescript from "@/src/commands/typescript";
 
 const apiRouteRegex = /^\/api($|\/|\?)/;
 
@@ -48,7 +48,7 @@ const createDevRouter = async (cwdPath: string, apiDir: string) => {
         filePath.endsWith(JSExtensionE.TSX);
       if (!hasTypescript && isTypescript) {
         hasTypescript = true;
-        //typescript();
+        typescript();
       }
       router.add(filePath);
     },
