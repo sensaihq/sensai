@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import {
+  FILE_TYPE,
   HTTP_ANY,
   HTTP_DEFAULT_METHOD,
   HTTP_GET,
@@ -36,7 +37,7 @@ export default (router: Router) => {
           const data = await getRequestData(request, searchParams, params);
           try {
             const status = { code: HTTP_STATUS.OK };
-            const output = await context.run(
+            let output = await context.run(
               { headers, type, requestId, status },
               async () => {
                 return await [...middlewares, routePath].reduce(
@@ -58,6 +59,7 @@ export default (router: Router) => {
               const payload = message ? { code, message } : undefined;
               write(response, error.code, serverHeaders, payload);
             } else {
+              console.error(error);
               write(response, HTTP_STATUS.INTERNAL_ERROR, serverHeaders);
             }
           }

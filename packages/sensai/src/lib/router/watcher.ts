@@ -15,11 +15,11 @@ import { type Router } from "@/src/lib/router";
  *   - TODO ignored folders (i.e node modules and .simpi) that get renamed are not added to cache/router
  */
 
-export default async (dir: string, router: Router) => {
+export default async (router: Router, { apiDir }: { apiDir: string }) => {
   // start tracking dependencies
   const { default: invalidate } = await import("@/src/utils/invalidate");
   // track dependencies only when needed
-  const watcher = chokidar.watch(dir, {
+  const watcher = chokidar.watch(apiDir, {
     ignored: /(^|[\/\\])(node_modules|\.sensai)/,
     ignoreInitial: true,
   });
@@ -27,13 +27,13 @@ export default async (dir: string, router: Router) => {
     invalidate(join(process.cwd(), filePath));
   });
   watcher.on("add", (filePath: string) => {
-    if (isRelative(dir, filePath)) {
+    if (isRelative(apiDir, filePath)) {
       router.add(join("/", filePath));
     }
   });
   watcher.on("unlink", (filePath: string) => {
     invalidate(join(process.cwd(), filePath));
-    if (isRelative(dir, filePath)) {
+    if (isRelative(apiDir, filePath)) {
       router.remove(join("/", filePath));
     }
   });

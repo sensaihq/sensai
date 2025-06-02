@@ -16,6 +16,7 @@ const initializeDevServer = async (
     port: await getPort(port),
     apiDir,
     watch: options.watch,
+    cwdPath: process.cwd(),
   });
 };
 

@@ -1,9 +1,10 @@
-import { basename, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import getMetadata from "@/src/lib/router/metadata";
-//import { sanitize } from "@/src/utils/url"
 import trie, { LookupT } from "@/src/lib/router/trie";
 import middlewareMap from "@/src/lib/router/middlewares";
 import { FILE_TYPE } from "@/src/constants";
+
+type Tool = { name: string; path: string };
 
 type Resource = {
   [method: string]: {
@@ -13,18 +14,19 @@ type Resource = {
       type: string;
     };
   };
-};
+} & { tool?: Tool[] };
 
 export type Router = {
   add: (filePath: string) => void;
-  addRoute: (routePath: string /*, middlewarePaths?: string[]*/) => void;
-  addMiddleware: (middlewarePath: string) => void;
+  // addRoute: (routePath: string /*, middlewarePaths?: string[]*/) => void;
+  // addMiddleware: (middlewarePath: string) => void;
   lookup: (urlPath: string) =>
     | (LookupT & {
         middlewares: string[];
         resource: Resource;
       })
     | undefined;
+  getTools: (folderPath: string) => Tool[];
   remove: (filepath: string) => boolean;
   prune: (folderPath: string) => boolean;
 };
@@ -44,10 +46,11 @@ export default async (rootDir: string = ""): Promise<Router> => {
    * Add route with its optional middleware in the router/resource resolution.
    */
 
-  const addRoute = (routePath: string /*, middlewarePaths: string[] = []*/) => {
-    const { pathname, method, version, type } = getMetadata(routePath);
+  const addRoute = (routePath: string, type: FILE_TYPE) => {
+    const { pathname, method, version } = getMetadata(routePath);
     //const relativePath = relative(rootDir, pathname) || '/'
     const relativePath = pathname;
+
     const endpoint = resources.get(relativePath) || {};
     resources.set(relativePath, {
       ...endpoint,
@@ -64,26 +67,46 @@ export default async (rootDir: string = ""): Promise<Router> => {
     routes.add(relativePath);
   };
 
-  const addMiddleware = (middlewarePath: string) => {
-    middlewares.add(middlewarePath);
+  const addTool = (toolPath: string) => {
+    const filename = basename(toolPath); // TODO merge with get metadata
+    const chunks = filename.split(".");
+    if (chunks.length === 3) {
+      const dirPath = dirname(toolPath);
+      const resource = resources.get(dirPath) || {};
+      resources.set(dirPath, {
+        ...resource,
+        tool: [{ name: chunks[1], path: toolPath }, ...(resource.tool || [])],
+      } as Resource);
+    }
   };
 
   return {
     add(filePath: string) {
-      switch (getPrefix(filePath)) {
+      const prefix = getPrefix(filePath);
+      switch (prefix) {
         case FILE_TYPE.MIDDLEWARE:
         case FILE_TYPE.AUTHORIZER:
-          addMiddleware(filePath);
+          middlewares.add(filePath);
           break;
         case FILE_TYPE.ROUTE:
         case FILE_TYPE.MOCK:
         case FILE_TYPE.PROMPT:
-          addRoute(filePath);
+          addRoute(filePath, prefix);
+          break;
+        case FILE_TYPE.TOOL:
+          addTool(filePath);
           break;
       }
     },
 
-    addRoute,
+    /**
+     * Tools apply to a resource (i.e collection of routes under a URL segment).
+     */
+
+    getTools(folderPath: string) {
+      const resource = resources.get(folderPath.substring(rootDir.length));
+      return resource?.tool || [];
+    },
 
     /**
      * Lookup a path in the router Map.
@@ -116,7 +139,8 @@ export default async (rootDir: string = ""): Promise<Router> => {
      */
 
     remove(filePath: string) {
-      switch (getPrefix(filePath)) {
+      const prefix = getPrefix(filePath);
+      switch (prefix) {
         case FILE_TYPE.MIDDLEWARE:
         case FILE_TYPE.AUTHORIZER: {
           middlewares.remove(filePath);
@@ -125,16 +149,14 @@ export default async (rootDir: string = ""): Promise<Router> => {
         case FILE_TYPE.ROUTE:
         case FILE_TYPE.MOCK:
         case FILE_TYPE.PROMPT: {
-          const { pathname, method, type } = getMetadata(filePath); // TODO we should look at version
-          if (type === FILE_TYPE.ROUTE) {
-            const endpoint = resources.get(pathname);
-            delete endpoint[method];
-            if (Object.keys(endpoint).length < 1) {
-              routes.remove(pathname);
-              resources.delete(pathname);
-            }
-            return true;
+          const { pathname, method } = getMetadata(filePath); // TODO we should look at version
+          const endpoint = resources.get(pathname);
+          delete endpoint[method];
+          if (Object.keys(endpoint).length < 1) {
+            routes.remove(pathname);
+            resources.delete(pathname);
           }
+          return true;
         }
       }
       return false;
@@ -149,8 +171,6 @@ export default async (rootDir: string = ""): Promise<Router> => {
       resources.delete(folderPath);
       return routes.remove(folderPath, true);
     },
-
-    addMiddleware,
   };
 };
 

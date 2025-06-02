@@ -2,8 +2,8 @@ import httpServer from "@/src/lib/server/http";
 import createRouter from "@/src/lib/router";
 import gateway from "@/src/lib/server/gateway";
 import walker from "@/src/utils/walker";
-import watcher from "@/src/lib/router/watcher";
-import compiler from "@/src/lib/compiler";
+import createWatcher from "@/src/lib/router/watcher";
+import createCompiler from "@/src/lib/compiler";
 import { type SensaiConfig } from "@/src/types"; // TODO we should have a standard on how to declare and name types
 import { JSExtensionE } from "@/src/lib/compiler/enums";
 import typescript from "@/src/commands/typescript";
@@ -11,13 +11,15 @@ import typescript from "@/src/commands/typescript";
 const apiRouteRegex = /^\/api($|\/|\?)/;
 
 export default async (options: SensaiConfig) => {
-  const cwdPath = process.cwd();
-  const { apiDir, watch, port } = options;
-  const router = await createDevRouter(cwdPath, apiDir);
-  if (watch) await watcher(apiDir, router);
-  compiler(cwdPath, apiDir);
+  const { watch, port } = options;
+
+  // initialize development router
+  const router = await createDevRouter(options);
+  if (watch) await createWatcher(router, options);
+  createCompiler(router, options);
+
+  // connect router to HTTP
   const api = gateway(router);
-  // create http server
   const server = await httpServer((request, response) => {
     const { url } = request;
     if (apiRouteRegex.test(url)) {
@@ -36,7 +38,13 @@ export default async (options: SensaiConfig) => {
  * Typescript if needed (i.e if `apiDir` contains at least one `.ts` or `.tsx` files).
  */
 
-const createDevRouter = async (cwdPath: string, apiDir: string) => {
+const createDevRouter = async ({
+  cwdPath,
+  apiDir,
+}: {
+  cwdPath: string;
+  apiDir: string;
+}) => {
   let hasTypescript = false;
   const router = await createRouter(cwdPath);
   const devRouter = {
@@ -53,6 +61,8 @@ const createDevRouter = async (cwdPath: string, apiDir: string) => {
       router.add(filePath);
     },
   };
+
+  // read api directory and add all files to the router
   const entries = await walker(apiDir);
   for await (const filePath of entries) {
     devRouter.add(filePath);

@@ -53,4 +53,4 @@ type GuardOptions = {
   output?: JSONSchema7;
 };
 type Input<K extends keyof any, T> = { [P in K]: T };
-type Handler = (data: Input<string, unknown>) => unknown;
+export type Handler = (data: Input<string, unknown>) => unknown;

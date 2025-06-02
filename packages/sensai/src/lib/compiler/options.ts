@@ -29,7 +29,7 @@ export default (
     return {
       filename,
       minify: true,
-      // ...getSourceMapsOptions(),
+      //...getSourceMapsOptions(),
       isModule: true,
       module: getModuleOptions(),
       swcrc: false,

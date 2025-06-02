@@ -2,6 +2,7 @@ export type SensaiConfig = {
   apiDir: string;
   port: number;
   watch: boolean;
+  cwdPath: string;
 };
 
 export type SlugParams = Record<string, string | string[]>;

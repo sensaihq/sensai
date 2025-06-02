@@ -49,4 +49,5 @@ export enum FILE_TYPE {
   ROUTE = "route",
   MIDDLEWARE = "middleware",
   AUTHORIZER = "authorizer",
+  TOOL = "tool",
 }
