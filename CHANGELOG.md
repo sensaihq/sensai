@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.5.0 (2025-06-02)
+
+### Features
+
+- **ai:** Add agent prompt and tools ([#14](https://github.com/sensaihq/sensai/issues/14)) ([25ffff2](https://github.com/sensaihq/sensai/commit/25ffff20fa29a82ab68d26118c86c39f1d8ff492))
+
 ## 1.4.1 (2025-06-02)
 
 **Note:** Version bump only for package sensai
