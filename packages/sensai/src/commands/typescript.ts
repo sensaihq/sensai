@@ -6,12 +6,17 @@ import { ARTIFACTS_NAMESPACE } from "@/src/constants";
 import { merge } from "@/src/utils/object";
 
 export default async () => {
-  await Promise.all([
-    setupSensaiTypes(),
-    setupTsConfig(),
-    setupPackageJson(),
-    setupGitIgnore(),
-  ]);
+  try {
+    await Promise.all([
+      setupSensaiTypes(),
+      setupTsConfig(),
+      setupPackageJson(),
+      setupGitIgnore(),
+    ]);
+  } catch (error) {
+    // TODO we should never have errors or make sure one error does not prevent the others to run
+    console.error(error);
+  }
 };
 
 /**
@@ -80,7 +85,7 @@ const setupPackageJson = async () => {
   if (deps.length > 0) await installDevDependency(deps);
 };
 
-// TODO we might need a more robust solution has a dependency might exist in node_modules but not in the package.json
+// TODO We might need a more robust solution, as a dependency might exist in node_modules but not in the package.json
 const hasDependency = async (name: string): Promise<boolean> => {
   const depPath = join(process.cwd(), "node_modules", name);
   return hasFile(depPath);
