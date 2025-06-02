@@ -1,10 +1,7 @@
-import { streamText, ToolSet, jsonSchema, generateText } from "ai-core";
+import { streamText, ToolSet, jsonSchema } from "ai-core";
 import { Readable } from "node:stream";
 import { openai } from "@ai-sdk/openai";
-
-export const schema = (properties: unknown) => {
-  return jsonSchema(properties);
-};
+import { getHandlerOptions } from "@/src/lib/guard";
 
 export default async (
   prompt: string,
@@ -25,7 +22,23 @@ export default async (
   return Readable.fromWeb(result.textStream);
 };
 
-// export const tool = (mod: any) => {
-//   // generate tool off module
-//   return aiTool(mod);
-// };
+/**
+ * This method is used to transform a "guarded" function into a LLM
+ * tool.
+ * @private
+ */
+
+export const tool = <T extends Parameters<typeof getHandlerOptions>[0]>(
+  execute: T
+) => {
+  const options = getHandlerOptions(execute);
+  if (options) {
+    // TODO add sensible defaults
+    const { description, input = {} } = options;
+    return {
+      description,
+      parameters: jsonSchema(input),
+      execute,
+    };
+  }
+};

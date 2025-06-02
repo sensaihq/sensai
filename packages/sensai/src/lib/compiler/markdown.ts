@@ -15,23 +15,14 @@ export const getPromptTypescript = (
   // orhter prompt declaratively
   return `
     import template from 'sensai/template';
-    import ai, { schema } from 'sensai/dist/src/utils/ai'; // TODO this should be cleaner
-    import { getHiddenProperty } from 'sensai/dist/src/utils/hidden';
+    import ai, { tool } from 'sensai/dist/src/utils/ai'; // TODO this should be cleaner
 
     const tools = {};
     ${tools
       .map(
         (tool) => `
       const tool_${tool.name} = require('${tool.path}'); 
-      tools["${tool.name}"] = { description: getHiddenProperty(tool_${tool.name}).summary, parameters: schema(${JSON.stringify(
-        {
-          type: "object",
-          properties: {
-            city: { type: "string", description: "City name" },
-          },
-          required: ["city"],
-        }
-      )}), execute: tool_${tool.name}.default };
+      tools["${tool.name}"] = tool(tool_${tool.name}.default);
     `
       )
       .join("\n")}
