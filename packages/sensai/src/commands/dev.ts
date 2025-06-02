@@ -1,27 +1,25 @@
-import { sep, posix } from "path";
 import httpServer from "@/src/lib/server/http";
-import { type SensaiConfig } from "@/src/types";
-import router from "@/src/lib/router";
+import createRouter from "@/src/lib/router";
 import gateway from "@/src/lib/server/gateway";
 import walker from "@/src/utils/walker";
-import watcher from "@/src/lib/router/watcher";
-import compiler from "@/src/lib/compiler";
+import createWatcher from "@/src/lib/router/watcher";
+import createCompiler from "@/src/lib/compiler";
+import { type SensaiConfig } from "@/src/types"; // TODO we should have a standard on how to declare and name types
+import { JSExtensionE } from "@/src/lib/compiler/enums";
+import typescript from "@/src/commands/typescript";
 
 const apiRouteRegex = /^\/api($|\/|\?)/;
 
 export default async (options: SensaiConfig) => {
-  //const doc = await initializeDoc(DEV_DOC_PATH);
-  const cwdPath = process.cwd();
-  const routes = await router(cwdPath);
-  const entries = await walker(options.apiDir);
-  for await (const filePath of entries) {
-    const normalizedPath = "/" + posix.join(...filePath.split(sep));
-    routes.add(normalizedPath);
-  }
-  if (options.watch) await watcher(routes, options);
-  compiler(routes, { cwdPath, ...options }); // TODO we should pass cwdPath to options in upper level
-  const api = await gateway(routes);
-  // create http server
+  const { watch, port } = options;
+
+  // initialize development router
+  const router = await createDevRouter(options);
+  if (watch) await createWatcher(router, options);
+  createCompiler(router, options);
+
+  // connect router to HTTP
+  const api = gateway(router);
   const server = await httpServer((request, response) => {
     const { url } = request;
     if (apiRouteRegex.test(url)) {
@@ -30,7 +28,44 @@ export default async (options: SensaiConfig) => {
     } else {
       // TODO documentation
     }
-  }, options.port);
-  console.log(`Sensai Server Started on Port: ${options.port}`);
+  }, port);
+  console.log(`Sensai Server Started on Port: ${port}`);
   return server;
+};
+
+/**
+ * Create router with all files in the `apiDir` directory and initialize
+ * Typescript if needed (i.e if `apiDir` contains at least one `.ts` or `.tsx` files).
+ */
+
+const createDevRouter = async ({
+  cwdPath,
+  apiDir,
+}: {
+  cwdPath: string;
+  apiDir: string;
+}) => {
+  let hasTypescript = false;
+  const router = await createRouter(cwdPath);
+  const devRouter = {
+    ...router,
+    // detect typesript whenever a file is added to the `apiDir` directory
+    add(filePath: string) {
+      const isTypescript =
+        filePath.endsWith(JSExtensionE.TYPESCRIPT) ||
+        filePath.endsWith(JSExtensionE.TSX);
+      if (!hasTypescript && isTypescript) {
+        hasTypescript = true;
+        typescript();
+      }
+      router.add(filePath);
+    },
+  };
+
+  // read api directory and add all files to the router
+  const entries = await walker(apiDir);
+  for await (const filePath of entries) {
+    devRouter.add(filePath);
+  }
+  return devRouter;
 };

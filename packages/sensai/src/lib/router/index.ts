@@ -12,7 +12,6 @@ type Resource = {
       //middlewares: string[],
       route: string;
       type: string;
-      tools?: string[];
     };
   };
 } & { tool?: Tool[] };
@@ -82,11 +81,6 @@ export default async (rootDir: string = ""): Promise<Router> => {
   };
 
   return {
-    getTools(folderPath: string) {
-      const resource = resources.get(folderPath.substring(rootDir.length));
-      return resource?.tool || [];
-    },
-
     add(filePath: string) {
       const prefix = getPrefix(filePath);
       switch (prefix) {
@@ -103,6 +97,15 @@ export default async (rootDir: string = ""): Promise<Router> => {
           addTool(filePath);
           break;
       }
+    },
+
+    /**
+     * Tools apply to a resource (i.e collection of routes under a URL segment).
+     */
+
+    getTools(folderPath: string) {
+      const resource = resources.get(folderPath.substring(rootDir.length));
+      return resource?.tool || [];
     },
 
     /**

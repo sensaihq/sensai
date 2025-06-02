@@ -19,7 +19,7 @@ import { getUniqueRequestId } from "@/src/utils/request";
 import { Stream } from "node:stream";
 import ServerError from "./error";
 
-export default async (router: Router) => {
+export default (router: Router) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
     const { method = HTTP_DEFAULT_METHOD, headers, url: requestUrl } = request;
     const { url, searchParams } = parseUrl(requestUrl);
@@ -51,7 +51,8 @@ export default async (router: Router) => {
             );
             write(response, status.code, serverHeaders, output, isHead);
           } catch (error: unknown) {
-            // TODO log errors in dev mode
+            // TODO log errors properly in dev mode
+            console.error(error);
             if (error instanceof ServerError) {
               // TODO provide a way to obfuscate and manage errors
               const { code, message } = error;

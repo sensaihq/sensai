@@ -1,7 +1,7 @@
-import { isRelative } from "@/src/utils/path";
 import chokidar from "chokidar";
 import { join } from "path";
-import { Router } from "@/src/lib/router";
+import { isRelative } from "@/src/utils/path";
+import { type Router } from "@/src/lib/router";
 
 /**
  * Initialize file-system watcher.
@@ -15,8 +15,7 @@ import { Router } from "@/src/lib/router";
  *   - TODO ignored folders (i.e node modules and .simpi) that get renamed are not added to cache/router
  */
 
-export default async (router: Router, options: { apiDir: string }) => {
-  const { apiDir } = options;
+export default async (router: Router, { apiDir }: { apiDir: string }) => {
   // start tracking dependencies
   const { default: invalidate } = await import("@/src/utils/invalidate");
   // track dependencies only when needed
@@ -25,20 +24,16 @@ export default async (router: Router, options: { apiDir: string }) => {
     ignoreInitial: true,
   });
   watcher.on("change", (filePath: string) => {
-    console.log("invalidate cache", filePath);
     invalidate(join(process.cwd(), filePath));
   });
   watcher.on("add", (filePath: string) => {
     if (isRelative(apiDir, filePath)) {
-      console.log("ADD file within api folder", filePath);
       router.add(join("/", filePath));
     }
   });
   watcher.on("unlink", (filePath: string) => {
-    console.log("invalidate cache", filePath);
     invalidate(join(process.cwd(), filePath));
     if (isRelative(apiDir, filePath)) {
-      console.log("REMOVE file within api folder", filePath);
       router.remove(join("/", filePath));
     }
   });

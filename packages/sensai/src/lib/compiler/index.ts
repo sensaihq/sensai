@@ -1,14 +1,7 @@
 import NativeModule from "node:module";
 import { basename, parse, join, dirname, sep } from "node:path";
 import { readFileSync } from "node:fs";
-import {
-  Options,
-  transformSync,
-  parseSync,
-  Module,
-  ModuleItem,
-  Program,
-} from "@swc/core";
+import { Options, transformSync, parseSync, Module } from "@swc/core";
 import options, { getCompilerOptions } from "@/src/lib/compiler/options";
 import {
   getMarkdownTypescript,
@@ -54,7 +47,6 @@ export default (
 
 const typescriptCompiler = (aliases: any, apiPath: string) => {
   return decorator((filename, content) => {
-    // TODO ONLY IF RELATIVE TO ROOT DIRECTORY
     return getJsCode(content, options(filename, aliases));
   });
 };
@@ -114,7 +106,7 @@ const decorator = (cb: (filePath: string, content: string) => string) => {
       mod._compile(cb(filename, content), filename);
     } catch (error: any) {
       // prevent exit 1
-      throw new Error(error.message);
+      throw error;
     }
   };
 };
@@ -124,18 +116,39 @@ const decorator = (cb: (filePath: string, content: string) => string) => {
  */
 
 const getJsCode = (content: string, options: Options | undefined) => {
-  // exclude third party node modules (TODO should exclude outside of project root)
-  if (options.filename.includes(`${sep}node_modules${sep}`)) return content;
-  const ast = parseSync(content, {
-    ...options.jsc.parser,
-    target: options.jsc.target,
-  });
-  // TODO check we are transpiling ONLY the right files
-  const summary = getExpressionStatement(ast);
-  const file = transformSync(ast, options).code;
-  if (summary) return wrapSensaiModule(file, { summary });
-  return file;
+  // // exclude third party node modules (TODO should exclude outside of project root)
+  // if (options.filename.includes(`${sep}node_modules${sep}`)) return content;
+  // const ast = parseSync(content, {
+  //   ...options.jsc.parser,
+  //   target: options.jsc.target,
+  // });
+  // // TODO check we are transpiling ONLY the right files
+  // const summary = getExpressionStatement(ast);
+  // const file = transformSync(ast, options).code;
+  // if (summary) return wrapSensaiModule(file, { summary });
+  // return file;
+  const { code } = transformSync(content, options);
+  if (
+    //avoid circular dependencies when linking sensai locally
+    options.filename === require.resolve("sensai/dist/src/lib/guard") ||
+    //only transpile files withing process.cwd
+    options.filename.includes(`${sep}node_modules${sep}`)
+  ) {
+    return content;
+  }
+  return `const { default: guard } = require('sensai/dist/src/lib/guard');(function(exports, guard) {${code}})(exports, guard);`;
 };
+
+// const { code } = transformSync(content, options);
+// if (
+//   // avoid circular dependencies when linking sensai locally
+//   options.filename === require.resolve("sensai/dist/src/lib/guard") ||
+//   // only transpile files withing process.cwd
+//   options.filename.includes(`${sep}node_modules${sep}`)
+// ) {
+//   return content;
+// }
+// return `const { default: guard } = require('sensai/dist/src/lib/guard');(function(exports, guard) {${code}})(exports, guard);`;
 
 /**
  * This is used to define sensai meta properties on the given module.

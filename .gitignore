@@ -132,3 +132,6 @@ dist
 
 .turbo
 **/.claude/settings.local.json
+
+# Sensai cache
+.sensai/
