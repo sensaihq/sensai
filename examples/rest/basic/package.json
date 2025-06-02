@@ -4,6 +4,6 @@
     "dev": "sensai dev"
   },
   "dependencies": {
-    "sensai": "*"
+    "sensai": "^1.4.0"
   }
 }
