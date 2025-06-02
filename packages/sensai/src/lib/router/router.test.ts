@@ -139,7 +139,6 @@ test("should add an agent prompt", async () => {
   for (const file of filenames) {
     add(file);
     const url = dirname(file);
-    console.log("URL", url);
     const { resource, middlewares, path, params } = lookup(url);
     assert.equal(path, url);
     assert.deepEqual(params, {});
