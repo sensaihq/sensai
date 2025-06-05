@@ -13,7 +13,7 @@ import { Readable, Stream, Transform, isReadable } from "node:stream";
 
 export default (
   template: string | TemplateStringsArray,
-  ...values: any[]
+  ...values: unknown[]
 ): any => {
   if (typeof template === "string") {
     const [chunks, patterns, params] = compile(template); // TODO do something with params
@@ -27,7 +27,17 @@ export default (
       );
       return Object.assign(stream, thenable(stream));
     };
-    compiledTemplate.params = params;
+    compiledTemplate.schema = params.reduce(
+      (acc, param) => {
+        const { properties } = acc;
+        properties[param] = { type: "string" };
+        return acc;
+      },
+      {
+        type: "object",
+        properties: {},
+      }
+    );
     return compiledTemplate;
   } else {
     // template literal
