@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.6.0 (2025-06-05)
+
+### Features
+
+- **prompt:** Create json schema off interpolated parameters in prompt ([#16](https://github.com/sensaihq/sensai/issues/16)) ([97018a1](https://github.com/sensaihq/sensai/commit/97018a1b9d38cf448f127855dbbdd1888b1ad8ee))
+
 ## 1.5.1 (2025-06-05)
 
 **Note:** Version bump only for package @sensai/doc
