@@ -77,6 +77,23 @@ const markdownCompiler = (
             options(join(dir, name + ".ts"), aliases)
           );
         }
+        case FILE_TYPE.ORCHESTRATOR: {
+          const { dir, name } = parse(filename);
+          const rootPath = dirname(apiPath);
+          const tools = routes.getTools(dir).map((tool) => ({
+            ...tool,
+            path: join(rootPath, tool.path),
+          }));
+          const agents = Object.entries(
+            routes.getAgents(dir.substring(rootPath.length))
+          ).map(([name, path]) => {
+            return { name, path: join(rootPath, path) };
+          });
+          return getJsCode(
+            getPromptTypescript(content, [...tools, ...agents]),
+            options(join(dir, name + ".ts"), aliases)
+          );
+        }
         case FILE_TYPE.MOCK:
         case FILE_TYPE.ROUTE: {
           const { dir, name } = parse(filename);

@@ -2,6 +2,61 @@
 import matter from "gray-matter";
 import * as markdown from "markdown-wasm";
 
+// const defaultSchema = {
+//   type: "object",
+//   oneOf: [
+//     {
+//       required: ["prompt"],
+//       properties: {
+//         prompt: {
+//           type: "string",
+//           description: "Direct prompt text to the LLM.",
+//         },
+//       },
+//       additionalProperties: false,
+//     },
+//     {
+//       required: ["messages"],
+//       properties: {
+//         messages: {
+//           type: "array",
+//           description:
+//             "Array of message objects for conversational interaction.",
+//           items: {
+//             type: "object",
+//             required: ["role", "content"],
+//             properties: {
+//               role: {
+//                 type: "string",
+//                 enum: ["system", "user", "assistant", "tool"],
+//                 description: "The role defining the author of the message.",
+//               },
+//               content: {
+//                 type: "string",
+//                 description: "The message content.",
+//               },
+//             },
+//             additionalProperties: false,
+//           },
+//           minItems: 1,
+//         },
+//       },
+//       additionalProperties: false,
+//     },
+//   ],
+// };
+
+const defaultSchema = {
+  type: "object",
+  properties: {
+    prompt: {
+      type: "string",
+      description: "The entire prompt provided by the user.",
+    },
+  },
+  required: ["prompt"],
+};
+
 /**
  * Get typescript code from a prompt markdown file content `fileContent`
  */
@@ -27,10 +82,13 @@ export const getPromptTypescript = (
       )
       .join("\n")}
     const prompt = template(${JSON.stringify(content)})
-    export default async (data) => {
+    export default guard(async (data) => {
       const text = await prompt(data);
       return await ai(text, { tools });
-    }
+    }, { 
+      description: ${JSON.stringify(data.description)},
+      input: ${JSON.stringify(defaultSchema)},
+    })
   `;
 };
 

@@ -1,3 +1,4 @@
+import { DYNAMIC_SEGMENT_REGEXP } from "@/src/constants";
 import { SlugParams } from "@/src/types";
 
 // radix-like node
@@ -239,7 +240,7 @@ const createNode = (): TrieT => {
  */
 
 const getDynamic = (segment: string): DynamicSegmentT | void => {
-  const matches = segment.match(/^(\[{1,2})(\.\.\.)?([^\[\]]+)(\]{1,2})$/);
+  const matches = segment.match(DYNAMIC_SEGMENT_REGEXP);
   if (matches) {
     const isCatchAll = !!matches[2];
     let level = 1;

@@ -2,6 +2,7 @@ import { basename, dirname, join } from "node:path";
 import getMetadata from "@/src/lib/router/metadata";
 import trie, { LookupT } from "@/src/lib/router/trie";
 import middlewareMap from "@/src/lib/router/middlewares";
+import orchestratorMap from "@/src/lib/router/orchestrator";
 import { FILE_TYPE } from "@/src/constants";
 
 type Tool = { name: string; path: string };
@@ -26,6 +27,7 @@ export type Router = {
         resource: Resource;
       })
     | undefined;
+  getAgents: (folderPath: string) => Record<string, string>;
   getTools: (folderPath: string) => Tool[];
   remove: (filepath: string) => boolean;
   prune: (folderPath: string) => boolean;
@@ -40,6 +42,7 @@ export type Router = {
 export default async (rootDir: string = ""): Promise<Router> => {
   const resources = new Map<string, Resource>();
   const middlewares = middlewareMap();
+  const orchestrator = orchestratorMap();
   const routes = trie();
 
   /**
@@ -91,12 +94,24 @@ export default async (rootDir: string = ""): Promise<Router> => {
         case FILE_TYPE.ROUTE:
         case FILE_TYPE.MOCK:
         case FILE_TYPE.PROMPT:
+        case FILE_TYPE.ORCHESTRATOR:
           addRoute(filePath, prefix);
+          // a prompt can easily be switched into an orchestrator
+          orchestrator.add(filePath);
           break;
         case FILE_TYPE.TOOL:
           addTool(filePath);
           break;
       }
+    },
+
+    /**
+     * An orchestrator can use agents as tools to create multi-agent
+     * orchetration.
+     */
+
+    getAgents(folderPath: string) {
+      return orchestrator.get(folderPath);
     },
 
     /**
@@ -146,9 +161,14 @@ export default async (rootDir: string = ""): Promise<Router> => {
           middlewares.remove(filePath);
           return true;
         }
+        case FILE_TYPE.ORCHESTRATOR: {
+          orchestrator.remove(filePath);
+          // no return statement as we want to move on to the next case
+        }
         case FILE_TYPE.ROUTE:
         case FILE_TYPE.MOCK:
-        case FILE_TYPE.PROMPT: {
+        case FILE_TYPE.PROMPT:
+        case FILE_TYPE.ORCHESTRATOR: {
           const { pathname, method } = getMetadata(filePath); // TODO we should look at version
           const endpoint = resources.get(pathname);
           delete endpoint[method];

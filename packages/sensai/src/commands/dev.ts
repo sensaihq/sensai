@@ -15,8 +15,8 @@ export default async (options: SensaiConfig) => {
 
   // initialize development router
   const router = await createDevRouter(options);
-  if (watch) await createWatcher(router, options);
-  createCompiler(router, options);
+  if (watch) await createWatcher(router, options); // TODO should be part of createDevRouter
+  createCompiler(router, options); // TODO should be part of createDevRouter
 
   // connect router to HTTP
   const api = gateway(router);

@@ -1,0 +1,11 @@
+{
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    ".sensai/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}

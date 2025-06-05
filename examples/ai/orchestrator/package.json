@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "sensai dev"
+  },
+  "dependencies": {
+    "sensai": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  }
+}

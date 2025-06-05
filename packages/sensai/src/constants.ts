@@ -20,6 +20,8 @@ export enum SENSAI_ENV {
   TEST = "testing",
 }
 
+export const DYNAMIC_SEGMENT_REGEXP = /^(\[{1,2})(\.\.\.)?([^\[\]]+)(\]{1,2})$/;
+
 export const HTTP_GET = "GET";
 export const HTTP_HEAD = "HEAD";
 export const HTTP_ANY = "ANY";
@@ -44,10 +46,11 @@ export const VERSION_DEFAULT = "default";
 
 // different route files in file-system
 export enum FILE_TYPE {
+  AUTHORIZER = "authorizer",
   MOCK = "mock",
+  MIDDLEWARE = "middleware",
+  ORCHESTRATOR = "orchestrator",
   PROMPT = "prompt",
   ROUTE = "route",
-  MIDDLEWARE = "middleware",
-  AUTHORIZER = "authorizer",
   TOOL = "tool",
 }
