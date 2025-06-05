@@ -27,6 +27,19 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
 
+  examples/ai/orchestrator:
+    dependencies:
+      sensai:
+        specifier: ^1.5.0
+        version: link:../../../packages/sensai
+    devDependencies:
+      '@types/node':
+        specifier: ^22.15.29
+        version: 22.15.29
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
   packages/sensai:
     dependencies:
       '@ai-sdk/openai':
@@ -5469,6 +5482,12 @@ packages:
 
   /typescript@5.5.4:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
+
+  /typescript@5.8.3:
+    resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

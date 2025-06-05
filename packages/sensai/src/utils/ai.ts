@@ -38,7 +38,18 @@ export const tool = <T extends Parameters<typeof getHandlerOptions>[0]>(
     return {
       description,
       parameters: jsonSchema(input),
-      execute,
+      execute: async (args) => {
+        const result = await execute(args);
+        // if Readable strem, convert to string
+        if (result instanceof Readable) {
+          const chunks: string[] = [];
+          for await (const chunk of result) {
+            chunks.push(chunk.toString());
+          }
+          return chunks.join("");
+        }
+        return result;
+      },
     };
   }
 };
