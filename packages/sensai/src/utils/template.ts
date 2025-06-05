@@ -1,4 +1,5 @@
 import { Readable, Stream, Transform, isReadable } from "node:stream";
+import { JSONSchema7 } from "../lib/schema";
 
 // TODO we should add validation at the template level
 // ex: #{} is required ?{} is optional
@@ -16,8 +17,7 @@ export default (
   ...values: unknown[]
 ): any => {
   if (typeof template === "string") {
-    const [chunks, patterns, params] = compile(template); // TODO do something with params
-    //const readable = createReadable(chunks)
+    const [chunks, patterns, params] = compile(template);
     const compiledTemplate = (data: Record<string, any> = {}) => {
       const stream = createReadable(chunks).pipe(
         createTransform((i) => {
@@ -27,17 +27,8 @@ export default (
       );
       return Object.assign(stream, thenable(stream));
     };
-    compiledTemplate.schema = params.reduce(
-      (acc, param) => {
-        const { properties } = acc;
-        properties[param] = { type: "string" };
-        return acc;
-      },
-      {
-        type: "object",
-        properties: {},
-      }
-    );
+    // TODO we will need to build schema as we are compiling the template (right now params are flat so it's not a problem)
+    compiledTemplate.schema = createTemplateSchema(params);
     return compiledTemplate;
   } else {
     // template literal
@@ -45,6 +36,25 @@ export default (
       createTransform((i) => values[i])
     );
     return Object.assign(stream, thenable(stream));
+  }
+};
+
+/**
+ * Values to be interpolated can be translated into a JSON schema.
+ * This schema can be used to validate the data passed to the template.
+ * TODO right now params are flat but we will need to build more complex schemas (this will require to get nested params).
+ */
+
+const createTemplateSchema = (params: string[]): JSONSchema7 | void => {
+  if (params.length > 0) {
+    return {
+      type: "object",
+      properties: params.reduce((acc, param) => {
+        acc[param] = { type: "string" };
+        return acc;
+      }, {}),
+      required: params,
+    };
   }
 };
 

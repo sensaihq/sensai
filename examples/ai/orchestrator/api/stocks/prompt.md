@@ -1,1 +1,1 @@
-#{prompt}
+stock price for #{company}
