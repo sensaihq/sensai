@@ -68,6 +68,8 @@ export const getPromptTypescript = (
   const { content, data } = matter(fileContent);
   // TODO we should provide a way for a prompt to inject the result of an
   // orhter prompt declaratively
+
+  // TODO we should find a better way for passthrough prompts
   return `
     import template from 'sensai/template';
     import ai, { tool } from 'sensai/dist/src/utils/ai'; // TODO this should be cleaner
@@ -81,14 +83,16 @@ export const getPromptTypescript = (
     `
       )
       .join("\n")}
-    const prompt = template(${JSON.stringify(content)})
+    const content = ${JSON.stringify(content.trim())};
+    const prompt = template(content);
+    const input = content !== '#{prompt}' ? prompt.schema : ${JSON.stringify(defaultSchema)};
     export default guard(async (data) => {
       const text = await prompt(data);
       return await ai(text, { tools });
     }, { 
       description: ${JSON.stringify(data.description)},
-      input: ${JSON.stringify(defaultSchema)},
-    })
+      input,
+    });
   `;
 };
 
