@@ -14,7 +14,7 @@ Sensai is an opiniated TypeScript/JavaScript framework for building powerful AI 
 - [**AI agents**](https://sensai.sh/docs/agent/prompt)
 - [**Multi-Agents orchestration**](https://sensai.sh/docs/multi-agent/orchestrator)
 - [**API battery included**](https://www.sensai.sh/docs/building)
-- **File-system based router**
+- [**File-system based router**](https://www.sensai.sh/docs/routing)
 - **Zero configuration**
 - **Live reload and automatic bundling**
 - and more
