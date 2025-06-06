@@ -40,7 +40,7 @@ With Sensai’s file-based routing, this simple folder structure defines a fully
 api/
 ├─ orchestrator.md
 ├─ researcher/
-│  ├─ orchestator.md
+│  ├─ orchestrator.md
 │  └─ creative/
 │     ├─ prompt.md
 │  └─ pragmatic/
