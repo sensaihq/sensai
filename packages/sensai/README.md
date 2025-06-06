@@ -31,3 +31,20 @@ npm create sensai
 ```
 
 Happy coding!
+
+## Need a little taste?
+
+With Sensai’s file-based routing, this simple folder structure defines a fully functional and complex multi-agent system with absolutely no config, no boilerplate or even code.
+
+```
+api/
+├─ orchestrator.md
+├─ researcher/
+│  ├─ orchestator.md
+│  └─ creative/
+│     ├─ prompt.md
+│  └─ pragmatic/
+│     ├─ prompt.md
+└─ reviewer/
+   └─ prompt.md
+```
