@@ -9,12 +9,12 @@
   </a>
 </p>
 
-Sensai is an opiniated TypeScript/JavaScript framework for building powerful AI agents and APIs using nothing more than a file-based structure. Define prompts, wire up tools and even orchestrate multi-agent systems using simple file conventions. Sensai gives you all the primitives you need so you can focus on building.
+Sensai is an opinionated TypeScript/JavaScript framework for building powerful AI agents and APIs using nothing more than a file-based structure. Define prompts, wire up tools and even orchestrate multi-agent systems using simple file conventions. Sensai gives you all the primitives you need so you can focus on building.
 
 - [**AI agents**](https://sensai.sh/docs/agent/prompt)
 - [**Multi-Agents orchestration**](https://sensai.sh/docs/multi-agent/orchestrator)
 - [**API battery included**](https://www.sensai.sh/docs/building)
-- **File-system based router**
+- [**File-system based router**](https://www.sensai.sh/docs/routing)
 - **Zero configuration**
 - **Live reload and automatic bundling**
 - and more
