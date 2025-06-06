@@ -9,16 +9,16 @@
   </a>
 </p>
 
-Sensai is an opinionated TypeScript/JavaScript framework that helps you easily build production ready API and AI applications. It gives you all the primitives you need so you can focus on building. Run Sensai on your local machine, or deploy to our serverless cloud. It truly feels like magic. Just write a function, push to Git, and that’s it. In seconds, your backend is live and ready to use.
+Sensai is opiniated TypeScript/JavaScript framework for building powerful AI agents and APIs using nothing more than a file-based structure. Define prompts, wire up tools and even orchestrate multi-agent systems using simple file conventions. Sensai gives you all the primitives you need so you can focus on building.
 
-- **Zero configuration**
+- [**No code AI agents**](https://sensai.sh/docs/agent/prompt)
+- [**Multi-agents orchestration**](https://sensai.sh/docs/multi-agent/orchestrator)
+- [**API battery included**](https://www.sensai.sh/docs/building)
 - **File-system based router**
+- **Zero configuration**
 - **Live reload and automatic bundling**
-- **API battery included**
-- **AI battery included**
-- and [more](https://sensai.sh/docs#features)
-
-Share you thoughts and shape our tech. [Submit feedback and feature requests](https://feedback.sensai.sh).
+- and more
+<!-- - and [more](https://sensai.sh/docs#features) -->
 
 ## Getting Started
 
