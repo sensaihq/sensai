@@ -51,12 +51,12 @@ export default async (mode: SENSAI_MODE, port: number) => {
     const sendMessage = async (message: string) => {
       setIsThinking(true);
       try {
-        const response = await fetch("http://localhost:3030/api?city=paris", {
+        const response = await fetch(`http://localhost:${port}/api`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ input: message }),
+          body: JSON.stringify({ prompt: message }),
         });
         setIsThinking(false);
         for await (const chunk of response.body) {
@@ -103,26 +103,7 @@ export default async (mode: SENSAI_MODE, port: number) => {
               }}
               placeholder={isThinking ? "Thinking..." : "Type something..."}
             />
-
-            {/*<Text color={input ? 'brightWhite' : 'gray'}>{input || 'Try "build"'}</Text> */}
           </Box>
-          {/* <Box>
-            {showShortcuts ? (
-              <Text color="gray">
-                {"  "}! for bash mode double tap esc to undo
-                <Newline />
-                {"  "}/ for commands shift + tab to auto-accept edits
-                <Newline />
-              </Text>
-            ) : (
-              <Text color="gray"> ? for shortcuts</Text>
-            )}
-            <Text>
-              {" "}
-              <Newline />
-              {""}
-            </Text>
-          </Box> */}
         </Box>
       </>
     );

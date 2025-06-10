@@ -2,7 +2,7 @@ import chokidar from "chokidar";
 import { join } from "path";
 import { isRelative } from "@/src/utils/path";
 import { type Router } from "@/src/lib/router";
-import invalidate from "@/src/utils/invalidate"; // TODO decide when to track dependencies
+import invalidate from "@/src/utils/invalidate";
 
 /**
  * Initialize file-system watcher.
