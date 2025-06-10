@@ -5,7 +5,7 @@
   "module": {
     "type": "commonjs",
     "lazy": false,
-    "ignoreDynamic": false,
+    "ignoreDynamic": true,
     //"ignoreDynamic": true,
     "noInterop": false // good for tests but add bloat to code
   },

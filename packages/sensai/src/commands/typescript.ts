@@ -56,7 +56,7 @@ const setupTsConfig = async (rootPath: string = process.cwd()) => {
   };
   if (hasTsConfig) {
     try {
-      const { default: json } = await import(filePath);
+      const { default: json } = require(filePath);
       // console.log("UPDATE TSCONFIG");
       await write(filePath, JSON.stringify(merge(json, config), null, 2));
     } catch (error) {

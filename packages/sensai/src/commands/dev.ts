@@ -29,7 +29,6 @@ export default async (options: SensaiConfig) => {
       // TODO documentation
     }
   }, port);
-  console.log(`Sensai Server Started on Port: ${port}`);
   return server;
 };
 

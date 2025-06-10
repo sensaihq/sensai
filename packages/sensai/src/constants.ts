@@ -12,6 +12,11 @@ export enum SENSAI_COMMAND {
   BUILD = "build",
 }
 
+export enum SENSAI_MODE {
+  AGENT = "agent",
+  API = "api",
+}
+
 export const ARTIFACTS_NAMESPACE = "sensai";
 export const ENV_NAMESPACE = "SENSAI_ENV";
 export enum SENSAI_ENV {

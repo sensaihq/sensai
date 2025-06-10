@@ -3,6 +3,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["ES2015"],
+    "jsx": "react-jsx",
     "paths": {
       "@/*": ["./*"],
       "#/*": ["./*"] // use in conjunction with .swcrc to symbolize root of package
