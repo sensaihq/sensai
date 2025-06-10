@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.7.0 (2025-06-10)
+
+### Features
+
+- **cli:** Add CLI header ([#19](https://github.com/sensaihq/sensai/issues/19)) ([a896897](https://github.com/sensaihq/sensai/commit/a8968971d78ef76be2b24ea1ea43c26c181a1027))
+
 ## 1.6.2 (2025-06-06)
 
 **Note:** Version bump only for package create-sensai
