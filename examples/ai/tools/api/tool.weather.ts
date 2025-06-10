@@ -1,5 +1,6 @@
 export default guard(
   async (args) => {
+    console.log("YOOOOO");
     return {
       temperature: 20,
       condition: "Cloudy",

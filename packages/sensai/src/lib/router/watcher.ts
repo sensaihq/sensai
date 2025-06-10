@@ -2,6 +2,7 @@ import chokidar from "chokidar";
 import { join } from "path";
 import { isRelative } from "@/src/utils/path";
 import { type Router } from "@/src/lib/router";
+import invalidate from "@/src/utils/invalidate"; // TODO decide when to track dependencies
 
 /**
  * Initialize file-system watcher.
@@ -16,15 +17,14 @@ import { type Router } from "@/src/lib/router";
  */
 
 export default async (router: Router, { apiDir }: { apiDir: string }) => {
-  // start tracking dependencies
-  const { default: invalidate } = await import("@/src/utils/invalidate");
+  const resetCache = invalidate();
   // track dependencies only when needed
   const watcher = chokidar.watch(apiDir, {
     ignored: /(^|[\/\\])(node_modules|\.sensai)/,
     ignoreInitial: true,
   });
   watcher.on("change", (filePath: string) => {
-    invalidate(join(process.cwd(), filePath));
+    resetCache(join(process.cwd(), filePath));
   });
   watcher.on("add", (filePath: string) => {
     if (isRelative(apiDir, filePath)) {
@@ -32,7 +32,7 @@ export default async (router: Router, { apiDir }: { apiDir: string }) => {
     }
   });
   watcher.on("unlink", (filePath: string) => {
-    invalidate(join(process.cwd(), filePath));
+    resetCache(join(process.cwd(), filePath));
     if (isRelative(apiDir, filePath)) {
       router.remove(join("/", filePath));
     }

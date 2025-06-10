@@ -31,7 +31,11 @@
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",
     "gray-matter": "^4.0.3",
-    "markdown-wasm": "^1.2.0"
+    "ink": "^6.0.0",
+    "ink-spinner": "^5.0.0",
+    "ink-text-input": "^6.0.0",
+    "markdown-wasm": "^1.2.0",
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@sensai/doc": "workspace:*",
