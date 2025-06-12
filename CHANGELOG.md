@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.7.2 (2025-06-12)
+
+### Bug Fixes
+
+- **tool:** Add action success default tool output ([#21](https://github.com/sensaihq/sensai/issues/21)) ([896bc71](https://github.com/sensaihq/sensai/commit/896bc717904117d662290d450d36875750772558))
+
 ## 1.7.1 (2025-06-12)
 
 ### Bug Fixes
