@@ -78,8 +78,7 @@ export const getPromptTypescript = (
     ${tools
       .map(
         (tool) => `
-      const tool_${tool.name} = require('${tool.path}'); 
-      tools["${tool.name}"] = tool(tool_${tool.name}.default);
+      tools["${tool.name}"] = tool(require('${tool.path}').default);
     `
       )
       .join("\n")}
