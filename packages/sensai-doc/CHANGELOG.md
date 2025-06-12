@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.7.1 (2025-06-12)
+
+### Bug Fixes
+
+- **tools:** Remove generated const with special characters ([#20](https://github.com/sensaihq/sensai/issues/20)) ([1f623ed](https://github.com/sensaihq/sensai/commit/1f623edd36ff89c720f1991c630ea8a1f909f350))
+
 # 1.7.0 (2025-06-10)
 
 ### Features
