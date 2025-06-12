@@ -40,6 +40,7 @@ export const tool = <T extends Parameters<typeof getHandlerOptions>[0]>(
       parameters: jsonSchema(input),
       execute: async (args) => {
         const result = await execute(args);
+        if (result == undefined) return `[SUCCESS] ${description}`;
         // if Readable strem, convert to string
         if (result instanceof Readable) {
           const chunks: string[] = [];
