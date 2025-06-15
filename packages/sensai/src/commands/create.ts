@@ -28,6 +28,7 @@ export default async (options: CreateCommandOptions) => {
     }
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
