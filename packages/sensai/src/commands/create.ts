@@ -3,7 +3,6 @@ import { dirname, join } from "node:path";
 import { execSync } from "node:child_process";
 import { EXTERNAL_AGENT } from "@/src/constants";
 import { write } from "@/src/utils/fs";
-import pkg from "#/package.json";
 
 /**
  * Scaffold a new project.
@@ -63,61 +62,6 @@ const run = (command: string): string => {
     stdio: ["pipe", "pipe", "pipe"],
   });
   return output.trim();
-};
-
-/**
- * Create a basic static project with a default prompt.
- */
-
-export const createStaticProject = async () => {
-  const root = process.cwd();
-  // static project
-  await Promise.all([
-    scaffold(
-      join(root, "package.json"),
-      JSON.stringify(
-        {
-          scripts: {
-            dev: "sensai dev",
-            build: "sensai build",
-            start: "sensai start",
-          },
-          dependencies: {
-            sensai: `^${pkg.version}`,
-          },
-        },
-        null,
-        2
-      )
-    ),
-    scaffold(
-      join(root, "/api/prompt.md"),
-      `What is the weather like in #{city}?`
-    ),
-    scaffold(
-      join(root, "/api/tool.weather.ts"),
-      `export default guard(
-  async (args) => {
-    return {
-      temperature: 78,
-      condition: "Aways sunny",
-      location: args.city,
-    };
-  },
-  {
-    description: "Get the weather information for a given city",
-    input: {
-      type: "object",
-      properties: {
-        location: { type: "string", description: "City name" },
-      },
-      required: ["location"],
-    },
-  }
-);
-`
-    ),
-  ]);
 };
 
 /**
