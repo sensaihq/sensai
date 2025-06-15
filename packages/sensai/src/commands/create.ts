@@ -1,8 +1,7 @@
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { execSync } from "node:child_process";
 import { EXTERNAL_AGENT } from "@/src/constants";
-import { write } from "@/src/utils/fs";
 
 /**
  * Scaffold a new project.
@@ -40,7 +39,7 @@ export default async (options: CreateCommandOptions) => {
 const createClaudeProject = async (prompt: string) => {
   const root = process.cwd();
   const instructions = await readFile(
-    join(__dirname, "../../llms.txt"),
+    join(__dirname, "../../../llms.txt"),
     "utf-8"
   );
   await scaffold(
@@ -48,20 +47,19 @@ const createClaudeProject = async (prompt: string) => {
     `You are a very strong software engineer with expert knowledge of the framework Sensai. You will be asked to generate code managed by Sensai.\n\n ${instructions}`
   );
   // will throw error if claude code is not installed
-  await run(`claude -p "/project:sensai ${prompt}"`);
+  run(`claude "/project:sensai ${prompt}"`);
 };
 
 /**
  * Execute a command in the current working directory and return the output.
  */
 
-const run = (command: string): string => {
-  const output = execSync(command, {
+const run = (command: string) => {
+  execSync(command, {
     cwd: process.cwd(),
+    stdio: "inherit",
     encoding: "utf-8",
-    stdio: ["pipe", "pipe", "pipe"],
   });
-  return output.trim();
 };
 
 /**
@@ -71,5 +69,5 @@ const run = (command: string): string => {
 
 const scaffold = async (filePath: string, content: string) => {
   await mkdir(dirname(filePath), { recursive: true });
-  write(filePath, content);
+  await writeFile(filePath, content, "utf-8");
 };
