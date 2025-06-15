@@ -3,6 +3,7 @@ import * as commander from "commander";
 import dev from "@/src/bin/sensai-dev";
 import build from "@/src/bin/sensai-build";
 import start from "@/src/bin/sensai-start";
+import create from "@/src/bin/sensai-create";
 import pkg from "#/package.json";
 
 // create main program
@@ -12,6 +13,7 @@ const program = new commander.Command();
 program.name("sensai").version(pkg.version).usage("<command>");
 
 // add sub commands
+program.addCommand(create);
 program.addCommand(dev);
 program.addCommand(build);
 program.addCommand(start);

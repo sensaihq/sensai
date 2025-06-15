@@ -7,9 +7,15 @@ export const DEV_DOC_PATH = join(__dirname, "../../../sensai-doc");
 
 // enums
 export enum SENSAI_COMMAND {
+  CREATE = "create",
   DEV = "dev",
   START = "start",
   BUILD = "build",
+}
+
+export enum EXTERNAL_AGENT {
+  CLAUDE = "claude-code",
+  OPENAI = "codex",
 }
 
 export enum SENSAI_MODE {
