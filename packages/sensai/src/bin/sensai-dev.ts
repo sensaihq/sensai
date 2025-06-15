@@ -45,5 +45,5 @@ export default new commander.Command()
     process.env.PORT || DEV_SERVER_DEFAULT_PORT
   )
   .option("--no-watch", "disable hot reload")
-  .usage("<dir> -p <port number>")
+  .usage("-p <port number>")
   .action(initializeDevServer);
