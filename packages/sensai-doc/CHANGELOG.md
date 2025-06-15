@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.8.0 (2025-06-15)
+
+### Features
+
+- **cli:** sensai create with third party agent ([#22](https://github.com/sensaihq/sensai/issues/22)) ([8b9fff5](https://github.com/sensaihq/sensai/commit/8b9fff592f0527d7be2a036b65bfc861ab499792))
+
 ## 1.7.2 (2025-06-12)
 
 ### Bug Fixes
