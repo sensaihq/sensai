@@ -7,11 +7,10 @@ export default new commander.Command()
   .description(
     "Description:\n  Compiles and optimize sensai project for production deployment."
   )
-  .argument("[dir]", "represents the API directory", "api")
-  .usage("<dir>")
-  .action(async (apiDir: string) => {
+  .option("--agent", "build in agent mode")
+  .action(async (options: { agent: boolean }) => {
     const { default: command } = await import("@/src/commands/build");
     await command({
-      apiDir,
+      apiDir: "api",
     });
   });
