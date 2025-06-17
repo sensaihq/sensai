@@ -6,7 +6,7 @@
   "version": "1.8.1",
   "description": "Because even AI needs a master",
   "bin": {
-    "sensai": "./dist/src/bin/sensai.js"
+    "sensai": "./dist/src/bin/cli.js"
   },
   "files": [
     "dist",
