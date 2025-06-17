@@ -6,7 +6,7 @@ import { SENSAI_COMMAND, SENSAI_ENV } from "@/src/constants";
 const argv = process.argv.slice(2);
 
 const spawnSensai = (sensaiEnv: SENSAI_ENV) => {
-  const sensaiPath = join(__dirname, "../../dist/src/bin/sensai.js");
+  const sensaiPath = join(__dirname, "../../src/bin/sensai.js");
   const child = spawn("node", [sensaiPath, ...argv], {
     env: {
       ...process.env,
